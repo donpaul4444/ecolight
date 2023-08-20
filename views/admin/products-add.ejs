@@ -1,0 +1,203 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+
+<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-products-list.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:00 GMT -->
+
+<head>
+    <meta charset="utf-8">
+    <title>Admin</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <%- include('../partials/astylesheet') %>
+</head>
+
+<body>
+    <%- include('../partials/aheader',{title:"products"}) %>
+        <section class="content-main main-wrap">
+            <div class="row">
+                <div class="col-6">
+                    <div class="content-header">
+                        <h2 class="content-title">Add New Product</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <form id="myform">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <h6>1. General info</h6>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="mb-4">
+                                            <label class="form-label">Product Name</label>
+                                            <input type="text" placeholder="Type here" class="form-control" name="name">
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="form-label">Description</label>
+                                            <textarea placeholder="Type here" class="form-control" rows="4"
+                                                name="description"></textarea>
+                                        </div>
+                                    
+                                        <div class="mb-4">
+                                            <label class="form-label">Colours</label>
+                                            <select class="form-select" name="colour">
+                                                <option value="" selected>Choose a colour</option>
+                                                    <option value="White">White</option>
+                                                    <option value="Warm">Warm</option>
+                                                    <option value="Red">Red</option>
+                                                    <option value="Green">Green</option>
+                                                    <option value="Blue">Blue</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="form-label">Number Of Lights</label>
+                                            <select class="form-select" name="lights">
+                                                <option value="" selected>Choose a number</option>
+                                                    <option value="One">One</option>
+                                                    <option value="Two">Two</option>
+                                                    <option value="Three">Three</option>
+                                                    <option value="Four">Four</option>
+                                                    <option value="Five">Five</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="form-label">Brand Name</label>
+                                            <select class="form-select" name="brand">
+                                                <option value="" selected>Choose a brand</option>
+                                                    <option value="Philips">Philips</option>
+                                                    <option value="Sinoman">Sinoman</option>
+                                                    <option value="Homesake">Homesake</option>
+                                                    <option value="Eliante">Eliante by jainsons</option>
+                                                    <option value="Crompton">Crompton</option>
+                                            </select>
+                                        </div>
+                                            <div class="mb-4">
+                                                <label class="form-label">Quantity</label>
+                                                <input type="text" placeholder="0" class="form-control" name="quantity">
+                                            </div>
+                                       
+                                        
+                                    </div> <!-- col.// -->
+                                </div> <!-- row.// -->
+                                <hr class="mb-4 mt-0">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <h6>2. Pricing</h6>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="mb-4">
+                                            <label class="form-label">Price in INR</label>
+                                            <input type="text" placeholder="₹0" class="form-control" name="price">
+                                        </div>
+                                    </div> <!-- col.// -->
+                                </div> <!-- row.// -->
+                                <hr class="mb-4 mt-0">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <h6>3. Category</h6>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="mb-4">
+                                            <select class="form-select" name="category">
+                                                <option value="" selected>Choose a category</option>
+                                                <% category.forEach(cat=> { %>
+                                                    <option value="<%= cat.catname %>">
+                                                        <%= cat.catname %>
+                                                    </option>
+                                                    <% }); %>
+                                            </select>
+                                        </div>
+                                    </div> <!-- col.// -->
+                                </div> <!-- row.// -->
+                                <hr class="mb-4 mt-0">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <h6>4. Media</h6>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="mb-4">
+                                            <label class="form-label">Images</label>
+                                            <input class="form-control" type="file" name="image" multiple>
+                                        </div>
+                                    </div> <!-- col.// -->
+                                </div> <!-- .row end// -->
+                                <hr class="mb-4 mt-0">
+                                <div class="content-header">
+                                    <div>
+                                        <button type="submit"
+                                            class="btn btn-md rounded font-sm hover-up">submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+        </section> <!-- content-main end// -->
+        <%- include('../partials/afooter') %>
+        <script>
+            const form = document.getElementById("myform")
+
+            form.addEventListener("submit", (event) => {
+                event.preventDefault();
+          
+                const formData = new FormData(form);
+                const productData = {};
+                for (let [name, value] of formData){
+                    productData[name] = value;
+                }
+                delete productData.image
+                const file=form.image.files
+              
+                const formData2= new FormData()
+                formData2.append("productData",JSON.stringify(productData))
+               for(let i=0; i<file.length; i++){
+                formData2.append("image",file[i])
+               }
+            
+                fetch("/admin/addproduct", {
+                    method: "POST",
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData2,
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href="/admin/products"
+                        }else{
+                            Toastify({
+							text: data.message,
+							gravity: "bottom", // `top` or `bottom`
+							position: "center",
+							style: {
+								background: "#f00",
+							}
+						}).showToast(); 
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error)
+                    })
+            })
+        </script>
+
+</body>
+
+
+<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-products-list.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:12 GMT -->
+
+</html>

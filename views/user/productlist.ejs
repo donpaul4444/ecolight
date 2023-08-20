@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+	<title>EcoLight</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<%- include('../partials/ustylesheets') %>
+</head>
+
+<body>
+	<%- include('../partials/uheader', { title: (type === "indoor" ? "indoor" : "outdoor")}) %>
+		<div class="breadcrumbs">
+			<div class="container">
+				<div class="row">
+					<div class="col">
+						<p class="bread"><span><a href="index.html">Home</a></span> / <span><%= type %></span></p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="colorlib-product">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-3 col-xl-3">
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="side border mb-1">
+									<h3>Brand</h3>
+									<ul 
+									<% const uniqueBrands = [...new Set(products.map(prod => prod.brand))]  
+										uniqueBrands.forEach(brand=> { %>
+										<li><input type="checkbox" id="biobevelCheckbox">
+											<a href="#">
+												<%= brand%>
+											</a>
+										</li>
+										</option>
+										<% }); %>
+									</ul>
+								</div>
+							</div>
+
+							
+							<div class="col-sm-12">
+								<div class="side border mb-1">
+									<h3>Colors</h3>
+									<ul>
+										<% const uniqueColors = [...new Set(products.map(prod => prod.colour))]  
+										uniqueColors.forEach(colour=> { %>
+											<li><input type="checkbox" id="biobevelCheckbox">
+												<a href="#">
+													<%= colour %>
+												</a>
+											</li>
+											</option>
+											<% }); %>
+									</ul>
+								</div>
+							</div>
+							<div class="col-sm-12">
+								<div class="side border mb-1">
+									<h3>Price range</h3>
+									<ul>
+										<li><input type="checkbox" id="biobevelCheckbox"><a href="#"> ₹0 - ₹500</a></li>
+										<li><input type="checkbox" id="biobevelCheckbox"><a href="#"> ₹500 - ₹1500</a>
+										</li>
+										<li><input type="checkbox" id="biobevelCheckbox"><a href="#"> ₹1500 - ₹3000</a>
+										</li>
+										<li><input type="checkbox" id="biobevelCheckbox"><a href="#"> ₹3000 - above</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="col-lg-9 col-xl-9">
+						<div class="row row-pb-md">
+							<% products.forEach(prod=> { %>
+								<div class="col-lg-4 mb-4 text-center">
+									<div class="product-entry border">
+										<a href="/productlist/productdetail?id=<%= prod._id %>" class="prod-img">
+											<img src="/uploads/<%= prod.images[0] %>" class="img-fluid"
+												alt="Free html5 bootstrap 4 template" width="200px">
+										</a>
+										<div class="desc" style="text-align: left;">
+											<h2><a href="#">
+													<%= prod.name %>
+												</a></h2>
+											<h2><a href="#">
+													<%= prod.brand %>
+												</a></h2>
+											<span class="price">₹<%= prod.price %></span>
+										</div>
+									</div>
+								</div>
+								<% }); %>
+						</div>
+					</div>
+
+
+
+					<!-- <div class="row">
+							<div class="col-md-12 text-center">
+								<div class="block-27">
+				               <ul>
+					               <li><a href="#"><i class="ion-ios-arrow-back"></i></a></li>
+				                  <li class="active"><span>1</span></li>
+				                  <li><a href="#">2</a></li>
+				                  <li><a href="#">3</a></li>
+				                  <li><a href="#">4</a></li>
+				                  <li><a href="#">5</a></li>
+				                  <li><a href="#"><i class="ion-ios-arrow-forward"></i></a></li>
+				               </ul>
+				            </div>
+							</div>
+						</div> -->
+				</div>
+			</div>
+		</div>
+		</div>
+
+		<%- include('../partials/ufooter') %>
+</body>
+
+</html>

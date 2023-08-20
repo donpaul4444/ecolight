@@ -1,0 +1,159 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+
+<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-products-list.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:00 GMT -->
+
+<head>
+    <meta charset="utf-8">
+    <title>Admin</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <%- include('../partials/astylesheet') %>
+</head>
+
+<body>
+    <%- include('../partials/aheader',{title:"customers"}) %>
+        <section class="content-main main-wrap">
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">ALERT</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <span id="spanalert"></span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" id="deletebutton" class="btn btn-primary"
+                                onclick="confirmDeleteInModal()">Ok</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="content-header">
+                <h2 class="content-title">Customers</h2>
+            </div>
+            <div class="card mb-4">
+                <header class="card-header">
+                    <div class="row gx-3">
+                        <div class="col-lg-4 col-md-6 me-auto">
+                            <input type="text" placeholder="Search..." class="form-control">
+                        </div>
+                        <div class="col-lg-2 col-md-3 col-6">
+                            <select class="form-select">
+                                <option>Status</option>
+                                <option>Active</option>
+                                <option>Disabled</option>
+                                <option>Show all</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-md-3 col-6">
+                            <select class="form-select">
+                                <option>Show 20</option>
+                                <option>Show 30</option>
+                                <option>Show 40</option>
+                            </select>
+                        </div>
+                    </div>
+                </header> <!-- card-header end// -->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Sl no:</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Mobile</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% customers.forEach((cust,index)=> { %>
+                                    <tr>
+                                        <td style="width: 10%;">
+                                            <%= index + 1 %>
+                                        </td>
+                                        <td style="width: 20%;">
+                                            <h6 class="mb-0 title">
+                                                <%= cust.name %>
+                                            </h6>
+                                        </td>
+                                        <td style="width: 20%;">
+                                            <%= cust.email %>
+                                        </td>
+                                        <td style="width: 15%;">
+                                            <%= cust.mobile %>
+                                        </td>
+                                        <td style="width: 15%;">
+                                            <button type="button"
+                                                onclick="deleteconfirm('<%= cust._id %>','<%= cust.status %>')"
+                                                class="btn btn-sm font-sm btn-light rounded <%= cust.status === 'Active' ? 'alert-success' : 'alert-danger' %>"
+                                                data-index="<%= index %>" data-toggle="modal"
+                                                data-target="#deleteModal">
+                                                <%= cust.status %>
+                                            </button>
+                                        </td>
+
+                                        <% }); %>
+                            </tbody>
+                        </table> <!-- table-responsive.// -->
+                    </div>
+                </div> <!-- card-body end// -->
+            </div> <!-- card end// -->
+            <div class="pagination-area mt-15 mb-50">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-start">
+                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                        <li class="page-item"><a class="page-link" href="#">02</a></li>
+                        <li class="page-item"><a class="page-link" href="#">03</a></li>
+                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                        <li class="page-item"><a class="page-link" href="#">16</a></li>
+                        <li class="page-item"><a class="page-link" href="#"><i
+                                    class="material-icons md-chevron_right"></i></a></li>
+                    </ul>
+                </nav>
+            </div>
+        </section> <!-- content-main end// -->
+
+        <%- include('../partials/afooter') %>
+            <script>
+                let deleteid = ""
+                function deleteconfirm(id, status) {
+                    deleteid = id
+                    let value
+                    if(status=="Active"){
+                         value="block"
+                    }else{
+                        value="activate"
+                    }
+                    const spanalert = document.getElementById("spanalert");
+                    spanalert.innerHTML = `You want to ${value} this person?`
+                    $('#exampleModal').modal('show')
+                }
+
+                function confirmDeleteInModal() {
+                    const redirectUrl = `/admin/customer/edit?id=${deleteid}`;
+                    window.location.href = redirectUrl;
+                }
+
+
+            </script>
+</body>
+
+</html>

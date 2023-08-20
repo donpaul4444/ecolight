@@ -1,0 +1,207 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+	<title>EcoLight</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<%- include('../partials/ustylesheets') %>
+</head>
+
+<body>
+	<%- include('../partials/uheader',{title:""}) %>
+		<div class="breadcrumbs">
+			<div class="container">
+				<div class="row">
+					<div class="col">
+						<p class="bread"><span><a href="index.html">Home</a></span> / <span>Shopping Cart</span></p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="colorlib-product">
+			<div class="container">
+				<div class="row row-pb-lg">
+					<div class="col-md-10 offset-md-1">
+						<div class="process-wrap">
+							<div class="process text-center active">
+								<p><span>01</span></p>
+								<h3>Shopping Cart</h3>
+							</div>
+							<div class="process text-center">
+								<p><span>02</span></p>
+								<h3>Checkout</h3>
+							</div>
+							<div class="process text-center">
+								<p><span>03</span></p>
+								<h3>Order Complete</h3>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row row-pb-lg">
+					<div class="col-md-12">
+						<div class="product-name d-flex">
+							<div class="one-forth text-left px-4">
+								<span>Product Details</span>
+							</div>
+							<div class="one-eight text-center">
+								<span>Price</span>
+							</div>
+							<div class="one-eight text-center">
+								<span>Quantity</span>
+							</div>
+							<div class="one-eight text-center">
+								<span>Total</span>
+							</div>
+							<div class="one-eight text-center px-4">
+								<span>Remove</span>
+							</div>
+						</div>
+
+						<% if (cartDetails?.items.length>0) { %>
+							<% for (const item of cartDetails.items) { %>
+								<div class="product-cart d-flex">
+									<div class="one-forth">
+										<div class="product-img"
+											style="background-image: url(/uploads/<%=item.productId.images[0]%>);">
+										</div>
+										<div class="display-tc">
+											<h3>
+												<%= item.productId.name %>
+											</h3>
+										</div>
+									</div>
+									<div class="one-eight text-center">
+										<div class="display-tc">
+											<span class="price  originalprice">
+												<%= item.productId.price %>
+											</span>
+										</div>
+									</div>
+									<div class="one-eight text-center">
+										<div class="display-tc">
+											<input type="number" id="quantity" name="quantity"
+												class="form-control input-number text-center"
+												onchange="confirmChange('<%= item._id %>',this)"
+												onkeydown="return false" value="<%= item.quantity %>" min="0" max="10">
+										</div>
+									</div>
+									<div class="one-eight text-center">
+										<div class="display-tc">
+											<span class="price  totalprice" id="price<%= item._id %>">
+												<%= item.productId.price * item.quantity %>
+											</span>
+										</div>
+									</div>
+									<div class="one-eight text-center">
+										<div class="display-tc">
+											<a href="/cartdelete?itemId=<%= item._id %>" class="closed"></a>
+										</div>
+									</div>
+								</div>
+								<% } %>
+									<% } else { %>
+										<div class="text-center">
+											<span>No items in the cart.</span>
+										</div>
+										<% } %>
+											<span id="textspan"></span>
+
+					</div>
+				</div>
+				<div class="row row-pb-lg">
+					<div class="col-md-12">
+						<div class="total-wrap">
+							<div class="row">
+								<div class="col-sm-8">
+									<form action="#">
+										<div class="row form-group">
+											<div class="col-sm-9">
+												<input type="text" name="quantity" class="form-control input-number"
+													placeholder="Your Coupon Number...">
+											</div>
+											<div class="col-sm-3">
+												<input type="submit" value="Apply Coupon" class="btn btn-primary">
+											</div>
+										</div>
+									</form>
+								</div>
+								<div class="col-sm-4 text-center">
+									<div class="total">
+										<div class="sub">
+											<p><span>Subtotal:</span> <span id="spansubtotal"></span></p>
+											<p><span>Delivery:</span> <span>₹0.00</span></p>
+											<p><span>Discount:</span> <span>₹0.00</span></p>
+										</div>
+										<div class="grand-total">
+											<p><span><strong>Total:</strong></span> <span id="spanfinaltotal">$450.00</span></p>
+										</div>
+										
+									</div>
+									<div class="text-centre">
+										<input type="submit" value="CHECKOUT" class="btn btn-success">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+
+		<%- include('../partials/ufooter') %>
+			<script>
+				const totalElements = document.querySelectorAll('.totalprice');
+				let spansubtotal = document.getElementById("spansubtotal")
+				let spanfinaltotal = document.getElementById("spanfinaltotal")
+
+
+				subTotal()
+				function subTotal() {
+					let subtotal = 0;
+					totalElements.forEach(element => {
+						const price = parseFloat(element.textContent);
+						if (!isNaN(price)) {
+							subtotal += price;
+						}
+					});
+					spansubtotal.innerHTML = "₹" + subtotal
+					spanfinaltotal.innerHTML = "₹" + subtotal
+				}
+
+
+				function confirmChange(id, target) {
+					let value = target.value
+					const parent = target.closest(".product-cart")
+					let totalprice = parent.querySelector(".totalprice")
+					let originalprice = parent.querySelector(".originalprice").innerText
+
+					fetch(`/cart/changequantity?id=${id}&quantity=${value}`, {
+						method: 'GET',
+						headers: {
+							'X-Requested-With': 'XMLHttpRequest'
+						},
+					})
+						.then(response => response.json())
+						.then(data => {
+							if (data.success) {
+
+								totalprice.innerText = originalprice * value
+								subTotal()
+
+							} else {
+								console.log(data.message);
+							}
+						})
+						.catch(error => {
+						})
+				}
+			</script>
+</body>
+
+</html>

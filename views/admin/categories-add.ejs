@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+
+<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-products-list.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:00 GMT -->
+
+<head>
+    <meta charset="utf-8">
+    <title>Admin</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <%- include('../partials/astylesheet') %>
+</head>
+
+<body>
+    <%- include('../partials/aheader',{title:"categories"}) %>
+        <section class="content-main main-wrap">
+            <div class="row">
+                <div class="col-9">
+                    <div class="content-header">
+                        <h2 class="content-title">Add New Category</h2>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4>Basic</h4>
+                        </div>
+                        <div class="card-body">
+                            <form  enctype="multipart/form-data" id="myForm">
+                                <div class="mb-4">
+                                    <label for="product_name" class="form-label">Category Name </label>
+                                    <input type="text" placeholder="Type here" name="catname" class="form-control" id="product_name">
+                                </div>
+
+                                <input type="file" name="image">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                    </div> <!-- card end// -->
+                </div>
+            </div>
+        </section> <!-- content-main end// -->
+    </main>
+    <%- include('../partials/afooter') %>
+    <script>
+        const form = document.getElementById("myForm")
+
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+      
+            const formData = new FormData(form);
+            const productData = {};
+            for (let [name, value] of formData){
+                productData[name] = value;
+            }
+            delete productData.image
+            const file=form.image.files
+          
+            const formData2= new FormData()
+            formData2.append("productData",JSON.stringify(productData))
+           for(let i=0; i<file.length; i++){
+            formData2.append("image",file[i])
+           }
+        
+            fetch("/admin/catpost", {
+                method: "POST",
+                headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+                body: formData2,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href="/admin/category"
+                    }else{
+                        Toastify({
+							text: data.message,
+							gravity: "bottom", // `top` or `bottom`
+							position: "center",
+							style: {
+								background: "#f00",
+							}
+						}).showToast(); 
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error)
+                })
+        })
+    </script>
+</body>
+
+
+<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-products-list.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:12 GMT -->
+
+</html>

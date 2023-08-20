@@ -1,0 +1,78 @@
+<div class="colorlib-loader"></div>
+
+<div id="page">
+    <nav class="colorlib-nav" role="navigation">
+        <div class="top-menu m-0">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-7 col-md-9">
+                        <img src="/images/ecologo.png" width="300px">
+                    </div>
+
+                    <div class="col-sm-5 col-md-3">
+                        <form action="#" class="search-wrap">
+                            <div class="form-group">
+                                <input type="search" class="form-control search" placeholder="Search">
+                                <button class="btn btn-primary submit-search text-center" type="submit"><i
+                                        class="icon-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 text-left menu-1 ">
+                        <ul class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <ul>
+                                    <li class="<% if (title === 'Home') { %>active<% } %>"><a href="/">Home</a></li>
+                                    <% if (typeof categories !== 'undefined' ) { %>
+                                    <% categories.forEach(cat => { %>
+                                        <li class="<% if (title === cat.name) { %>active<% } %>">
+                                            <a href="/product/<%= cat.catname %>"><%= cat.catname %></a>
+                                        </li>
+                                    <% }); %>
+                                    <% } %>
+                            
+                                    <li class="<% if (title === 'About') { %>active<% } %>"><a href="/about">About</a></li>
+                                    <li class="<% if (title === 'Contact') { %>active<% } %>"><a href="/contact">Contact</a></li>
+                                </ul>
+                            </div>
+                            
+                            <div class="d-flex align-items-center">
+                                <li><a href="/cart"><i class="icon-shopping-cart"></i> Cart [0]</a></li>
+
+                                <li id="loginbutton" hidden><a href="/login"><button class="btn btn-dark btn-sm"
+                                            type="button">Login</button></a></li>
+                                <li id="logoutbutton" hidden><a href="/logout"><button class="btn btn-dark btn-sm"
+                                            type="button">Logout</button></a></li>
+    
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="background-color: #B5E585; height: 30px;"></div>
+
+    </nav>
+    <script>
+        const loginbutton =document.getElementById("loginbutton")
+        const logoutbutton =document.getElementById("logoutbutton")
+         fetch("/checkuser", {
+                method: "get",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                       logoutbutton.hidden=false
+                    }else{
+                        loginbutton.hidden=false
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error)
+                })
+    </script>

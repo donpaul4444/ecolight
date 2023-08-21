@@ -6,12 +6,65 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-	<%- include('../partials/ustylesheets') %>
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Rokkitt:100,300,400,700" rel="stylesheet">
+
+	<!-- Animate.css -->
+	<link rel="stylesheet" href="/css/animate.css">
+	<!-- Icomoon Icon Fonts-->
+	<link rel="stylesheet" href="/css/icomoon.css">
+	<!-- Ion Icon Fonts-->
+	<link rel="stylesheet" href="/css/ionicons.min.css">
+	<!-- Bootstrap  -->
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+	<!-- Magnific Popup -->
+	<link rel="stylesheet" href="/css/magnific-popup.css">
+
+	<!-- Flexslider  -->
+	<link rel="stylesheet" href="/css/flexslider.css">
+
+	<!-- Owl Carousel -->
+	<link rel="stylesheet" href="/css/owl.carousel.min.css">
+	<link rel="stylesheet" href="/css/owl.theme.default.min.css">
+
+	<!-- Date Picker -->
+	<link rel="stylesheet" href="/css/bootstrap-datepicker.css">
+	<!-- Flaticons  -->
+	<link rel="stylesheet" href="/fonts/flaticon/font/flaticon.css">
+
+	<!-- Theme style  -->
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
 </head>
 
 <body>
-	<%- include('../partials/uheader',{title:""}) %>
+	<div class="colorlib-loader"></div>
+
+	<div id="page">
+		<nav class="colorlib-nav" role="navigation">
+			<div class="top-menu m-0">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-7 col-md-9">
+							<img src="/images/ecologo.png" width="300px">
+						</div>
+
+						<div class="col-sm-5 col-md-3">
+							<form action="#" class="search-wrap">
+								<div class="form-group">
+									<input type="search" class="form-control search" placeholder="Search">
+									<button class="btn btn-primary submit-search text-center" type="submit"><i
+											class="icon-search"></i></button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div style="background-color: #B5E585; height: 30px;"></div>
+		</nav>
 		<section class="vh-100">
 			<div class="container py-5 h-100">
 				<div class="row d-flex justify-content-center align-items-center h-100">
@@ -55,10 +108,7 @@
 												<button class="btn btn-dark btn-lg btn-block"
 													type="submit">Login</button>
 											</div>
-
-
 										</form>
-
 									</div>
 								</div>
 							</div>
@@ -67,31 +117,127 @@
 				</div>
 			</div>
 		</section>
+	</div>
+	<footer id="colorlib-footer" role="contentinfo">
+		<div class="container">
+			<div class="row row-pb-md">
+				<div class="col footer-col colorlib-widget">
+					<h4>About EcoLight</h4>
+					<p>EcoLight has designed, manufactured, and supplied decorative lighting for over a decade</p>
+					<p>
+					<ul class="colorlib-social-icons">
+						<li><a href="#"><i class="icon-twitter"></i></a></li>
+						<li><a href="#"><i class="icon-facebook"></i></a></li>
+						<li><a href="#"><i class="icon-linkedin"></i></a></li>
+						<li><a href="#"><i class="icon-dribbble"></i></a></li>
+					</ul>
+					</p>
+				</div>
+				<div class="col footer-col colorlib-widget">
+					<h4>Customer Care</h4>
+					<p>
+					<ul class="colorlib-footer-links">
+						<li><a href="#">Contact</a></li>
+						<li><a href="#">Returns/Exchange</a></li>
+						<li><a href="#">Gift Voucher</a></li>
+						<li><a href="#">Wishlist</a></li>
+						<li><a href="#">Special</a></li>
+						<li><a href="#">Customer Services</a></li>
+						<li><a href="#">Site maps</a></li>
+					</ul>
+					</p>
+				</div>
+				<div class="col footer-col colorlib-widget">
+					<h4>Information</h4>
+					<p>
+					<ul class="colorlib-footer-links">
+						<li><a href="#">About us</a></li>
+						<li><a href="#">Delivery Information</a></li>
+						<li><a href="#">Privacy Policy</a></li>
+						<li><a href="#">Support</a></li>
+						<li><a href="#">Order Tracking</a></li>
+					</ul>
+					</p>
+				</div>
+
+				<div class="col footer-col">
+					<h4>EcoLight</h4>
+					<ul class="colorlib-footer-links">
+						<li><a href="blog.html">Blog</a></li>
+						<li><a href="#">Press</a></li>
+						<li><a href="/admin">Administration</a></li>
+					</ul>
+				</div>
+
+				<div class="col footer-col">
+					<h4>Contact Information</h4>
+					<ul class="colorlib-footer-links">
+						<li>291 South 21th Street, <br> kadavanthara , kochi</li>
+						<li><a href="tel://1234567920"> 6282525215</a></li>
+						<li><a href="mailto:info@yoursite.com">info@ecolight.com</a></li>
+					</ul>
+				</div>
+			</div>
 		</div>
-		<%- include('../partials/ufooter') %>
-			<script>
-				const form = document.getElementById("myForm")
+		<div class="copy">
+			<div class="row">
+				<div class="col-sm-12 text-center">
 
-				form.addEventListener("submit", (event) => {
-					if (form.email.value.trim() == "") {
-						spanmail.innerHTML = "Email required"
-						event.preventDefault()
-					}
-					if (form.password.value.trim() == "") {
-						spanpass.innerHTML = "Password required"
-						event.preventDefault()
-					}
+				</div>
+			</div>
+		</div>
+	</footer>
+	<div class="gototop js-top">
+		<a href="#" class="js-gotop"><i class="ion-ios-arrow-up"></i></a>
+	</div>
 
-				})
-				form.email.addEventListener("click", () => {
-					spanmail.innerHTML = ""
+	jQuery
+	<script src="/js/jquery.min.js"></script>
+	<!-- popper -->
+	<script src="/js/popper.min.js"></script>
+	<!-- bootstrap 4.1 -->
+	<script src="/js/bootstrap.min.js"></script>
+	<!-- jQuery easing -->
+	<script src="/js/jquery.easing.1.3.js"></script>
+	<!-- Waypoints -->
+	<script src="/js/jquery.waypoints.min.js"></script>
+	<!-- Flexslider -->
+	<script src="/js/jquery.flexslider-min.js"></script>
+	<!-- Owl carousel -->
+	<script src="/js/owl.carousel.min.js"></script>
+	<!-- Magnific Popup -->
+	<script src="/js/jquery.magnific-popup.min.js"></script>
+	<script src="/js/magnific-popup-options.js"></script>
+	<!-- Date Picker -->
+	<script src="/js/bootstrap-datepicker.js"></script>
+	<!-- Stellar Parallax -->
+	<script src="/js/jquery.stellar.min.js"></script>
+	<!-- Main -->
+	<script src="/js/main.js"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+	<script>
+		const form = document.getElementById("myForm")
 
-				})
-				form.password.addEventListener("click", () => {
-					spanpass.innerHTML = ""
+		form.addEventListener("submit", (event) => {
+			if (form.email.value.trim() == "") {
+				spanmail.innerHTML = "Email required"
+				event.preventDefault()
+			}
+			if (form.password.value.trim() == "") {
+				spanpass.innerHTML = "Password required"
+				event.preventDefault()
+			}
 
-				})
-			</script>
+		})
+		form.email.addEventListener("click", () => {
+			spanmail.innerHTML = ""
+
+		})
+		form.password.addEventListener("click", () => {
+			spanpass.innerHTML = ""
+
+		})
+	</script>
 </body>
 
 </html>

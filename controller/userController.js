@@ -226,6 +226,24 @@ module.exports = {
     }
   },
 
+ getDeleteAddress: async(req,res,next)=>{
+  try {
+    const userId = req.session.user._id; 
+    const addressId = req.query.id; 
+
+  
+    await users.findByIdAndUpdate(userId, {
+      $pull: { address: { _id: addressId } }
+    });
+    res.status(200).json({status:true});
+
+  } catch (error) {
+    next(error)
+  }
+ },
+
+
+
   getCheckout: async (req,res,next)=>{
  
     try {

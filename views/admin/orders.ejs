@@ -21,10 +21,10 @@
     <%- include('../partials/aheader',{title:"orders"}) %>
         <section class="content-main main-wrap">
 
-           
+
 
             <div class="content-header">
-                <h2 class="content-title">Customers</h2>
+                <h2 class="content-title">Orders</h2>
             </div>
             <div class="card mb-4">
                 <header class="card-header">
@@ -55,10 +55,11 @@
                             <thead>
                                 <tr>
                                     <th>Sl no:</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Mobile</th>
+                                    <th>Order Id:</th>
+                                    <th>User Id:</th>
+                                    <th>Total Price</th>
                                     <th>Status</th>
+                                    <th>Details</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -68,20 +69,29 @@
                                             <%= index + 1 %>
                                         </td>
                                         <td style="width: 20%;">
-                                            <h6 class="mb-0 title">
-                                                <%= order._id%>
-                                            </h6>
+                                            <%= order._id%>
                                         </td>
                                         <td style="width: 20%;">
-                                            <%= order.totalprice %>
+                                            <%= order.user %>
                                         </td>
                                         <td style="width: 15%;">
-                                            <%= order.status %>
+                                            ₹ <%= order.totalprice %>
                                         </td>
                                         <td style="width: 15%;">
-                                            <button type="button">Details</button>
-                                       
-                                            
+                                            <select id="statusDropdown" onchange="updateOrderStatus(this,'<%= order._id %>')">
+                                                <option value="Placed" <%=order.status==='Placed' ? 'selected' : '' %>
+                                                    >Placed</option>
+                                                <option value="Shipped" <%=order.status==='Shipped' ? 'selected' : '' %>
+                                                    >Shipped</option>
+                                                <option value="Cancelled" <%=order.status==='Cancelled' ? 'selected'
+                                                    : '' %>>Cancelled</option>
+                                            </select>
+                                        </td>
+
+                                        <td style="width: 15%;">
+                                            <a href="/admin/orders/orderdetail?id=<%= order._id %>"><button
+                                                    type="button" class="btn btn-primary sm"
+                                                    style="font-size: 12px; padding: 4px 8px;">Details</button></a>
                                         </td>
 
                                         <% }); %>
@@ -107,9 +117,29 @@
 
         <%- include('../partials/afooter') %>
             <script>
-                
 
+                function updateOrderStatus(selectElement,id) {
+                    const selectedStatus = selectElement.value;
+                   
+                 
+                    fetch(`/admin/updateOrderStatus?orderId=${id}&status=${selectedStatus}`, {
+                        method: 'GET', 
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                       
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            window.location.reload();
+                        })
+                        .catch(error => {
+                            console.error('Error updating order status:', error);
+                        });
+                }
             </script>
+
+
 </body>
 
 </html>

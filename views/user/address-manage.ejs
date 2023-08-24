@@ -23,12 +23,14 @@
                     <a href="/address/add" ><button class="btn btn-success" style="margin-bottom: 20px;">Add Address</button></a>
                 </div>
                 <% addressArray.forEach(user=> { %>
-                <div style="background-color: rgb(235, 235, 235);  padding: 10px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-bottom: 20px;">
-                    <p style="margin:2px 0"><span><%= user.firstname %> <%= user.lastname %></span> </p>
+                <div class="d-flex justify-content-between" style="background-color: rgb(235, 235, 235);  padding: 10px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-bottom: 20px;">
+                    <div><p style="margin:2px 0"><span><%= user.firstname %> <%= user.lastname %></span> </p>
                     <p style="margin:2px 0"><span> <%= user.address %></span></p>
                     <p style="margin:2px 0"><span><%= user.city %>, <%= user.state %></span></p>
                     <p style="margin:2px 0"><span><%= user.pincode %></span></p>
-                    <p style="margin:2px 0"><span>Mobile:<%= user.mobile %></span></p>
+                    <p style="margin:2px 0"><span>Mobile:<%= user.mobile %></span></p></div>
+                    <div> <button class="btn btn-primary sm"
+                        style="font-size: 12px; padding: 4px 8px;" onclick="confirmDelete('<%= user._id %>')">Delete</button></div>
                 </div>
                 <% }); %>         
             </div>
@@ -38,6 +40,34 @@
 
 
     <%- include('../partials/ufooter') %>
+    <script>
+        function confirmDelete(id){
+            fetch(`/address/delete?id=${id}`, {
+                            method: 'GET',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status) {
+                                    window.location.reload()
+                                } else {
+                                    Toastify({
+                                    text: data.message,
+                                    gravity: "bottom", 
+                                    position: "center",
+                                    style: {
+                                        background: "#f00",
+                                    }
+                                }).showToast();
+                                }
+                            })
+                            .catch(error => {
+                            })
+                 
+        }
+    </script>
 </body>
 
 </html>

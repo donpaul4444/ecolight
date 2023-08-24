@@ -1,9 +1,10 @@
 const mongoose = require('mongoose')
+const databaseurl=process.env.databaseurl
 
 module.exports = {
     connect: () => {
 		mongoose
-			.connect("mongodb://127.0.0.1:27017/Ecolight", {
+			.connect(databaseurl, {
 				useNewUrlParser: true,
 				useUnifiedTopology: true,
 			})

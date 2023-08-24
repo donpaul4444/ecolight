@@ -21,6 +21,7 @@ router.get("/userprofile",passing.cache,session.authuser,userController.getUserP
 router.get("/address/manage",passing.cache,session.authuser,userController.getManageAddress)
 router.get("/address/add",passing.cache,session.authuser,userController.getAddAddress)
 router.post("/address/add",passing.cache,session.authuser,userController.postAddAddress)
+router.get("/address/delete",passing.cache,session.authuser,userController.getDeleteAddress)
 router.get("/checkout",passing.cache,session.authuser,userController.getCheckout)
 
 router.get("/ordercomplete",passing.cache,session.authuser,orderController.getOrderComplete)

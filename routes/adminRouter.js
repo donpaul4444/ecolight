@@ -33,6 +33,8 @@ router.post("/admin/product/edit",passing.cache,upload.array('image',5),session.
 router.delete("/admin/product/deleteimage",passing.cache,session.authadmin,productController.deleteImage)
 
 router.get("/admin/orders",passing.cache,session.authadmin,orderController.getAdminOrders)
+router.get("/admin/orders/orderdetail",passing.cache,session.authadmin,orderController.getAdminOrderDetail)
+router.get("/admin/updateOrderStatus",passing.cache,session.authadmin,orderController.postUpdateOrderStatus)
 
 
 

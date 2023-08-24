@@ -87,7 +87,7 @@ module.exports = {
   getProductList: async (req, res) => {
     const type = req.params.type;
     const category = await cat.find({status:"List"});
-    const products = await product.find({ category: type });
+    const products = await product.find({ category: type ,status: "List"});
     res.render("user/productlist", { category, products, type ,categories: category});
   },
   getProductDetail: async (req, res) => {
@@ -99,6 +99,7 @@ module.exports = {
   deleteImage: async (req,res,next)=>{
     const id= req.query.id
     const imageid= req.query.imageid
+ 
     try {
      const item = await product.findById(id);
       item.images = item.images.filter(img => img !== imageid);

@@ -71,7 +71,7 @@ module.exports = {
     const id= req.query.id
     const orders= await order.findById({_id:id}).populate(
       "items.productId")
-    res.render("user/orderlist",{order:orders,user})
+    res.render("user/order-detail",{order:orders,user})
       
     } catch (error) {
       next(error)
@@ -86,5 +86,32 @@ module.exports = {
     } catch (error) {
       next(error)
     }
-  }
+  },
+  getAdminOrderDetail: async(req,res,next)=>{
+    try {
+      const id= req.query.id
+      const orders= await order.findById({_id:id}).populate(
+        "items.productId")
+      res.render("admin/order-detail",{order:orders})
+      
+    } catch (error) {
+      next (error)
+    }
+  },
+
+  postUpdateOrderStatus:  async(req,res,next)=>{
+    const id=req.query.orderId
+    const status=req.query.status
+   
+    try { 
+      const orders= await order.findByIdAndUpdate(id,
+        { status: status },
+        { new: true } 
+    )
+    res.status(200).json();
+      
+    } catch (error) {
+      next (error)
+    }
+  },
 };

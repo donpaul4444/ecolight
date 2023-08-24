@@ -137,12 +137,13 @@
 											<p><span>Discount:</span> <span>₹0.00</span></p>
 										</div>
 										<div class="grand-total">
-											<p><span><strong>Total:</strong></span> <span id="spanfinaltotal">$450.00</span></p>
+											<p><span><strong>Total:</strong></span> <span id="spanfinaltotal"></span>
+											</p>
 										</div>
-										
+
 									</div>
-									<div class="text-centre">
-										<input type="submit" value="CHECKOUT" class="btn btn-success">
+									<div class="text-centre margin-top-10px mt-3">
+										<a ><button class="btn btn-success" id="checkout">CHECKOUT</button></a>
 									</div>
 								</div>
 							</div>
@@ -159,7 +160,7 @@
 				const totalElements = document.querySelectorAll('.totalprice');
 				let spansubtotal = document.getElementById("spansubtotal")
 				let spanfinaltotal = document.getElementById("spanfinaltotal")
-
+				let checkout = document.getElementById("checkout")
 
 				subTotal()
 				function subTotal() {
@@ -201,6 +202,22 @@
 						.catch(error => {
 						})
 				}
+
+				checkout.addEventListener('click', function (event) {
+					if (parseFloat(spanfinaltotal.innerText.slice(1)) === 0) {
+						event.preventDefault()
+						Toastify({
+							text: "your cart is empy",
+							gravity: "bottom",
+							position: "center",
+							style: {
+								background: "#f00",
+							}
+						}).showToast();
+					} else {
+						window.location.href = "/checkout";
+					}
+				})
 			</script>
 </body>
 

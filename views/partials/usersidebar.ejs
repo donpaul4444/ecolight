@@ -1,0 +1,26 @@
+<div>
+    <a href="/userprofile">
+        <div class="side border mb-1 d-flex <% if (option === 'profile') { %>selected<% } %>">
+            <div> <i class="fas fa-user fa-lg "></i></div>
+            <div style="margin-left: 30px;">
+                <%= user.name %>
+            </div>
+        </div>
+    </a>
+    <a href="/address/manage">
+        <div class="side border mb-1; <% if (option === 'address') { %>selected<% } %>">
+            Manage Addressess
+        </div>
+    </a>
+    <a href="#">
+        <div class="side border mb-1">
+            My wallet
+        </div>
+    </a>
+    <a href="/user/orders">
+        <div class="side border mb-1; <% if (option === 'orders') { %>selected<% } %>">
+            My orders
+        </div>
+    </a>
+</div>
+

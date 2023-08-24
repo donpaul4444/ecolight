@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>EcoLight</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <%- include('../partials/ustylesheets') %>
+</head>
+
+<body>
+
+    <%- include('../partials/uheader',{title:"" }) %>
+
+        <div class="container" style="min-height: 500px;">
+
+            <div class="d-flex" style="gap:100px; margin-top: 50px;">
+                <div class="flex-grow-0" style="width: 200px; flex-shrink: 0;">
+                    <%- include('../partials/usersidebar',{option:"address"}) %>
+                </div>
+                <div class="flex-grow-1">
+                    <form method="post" class="colorlib-form" action="/address/add">
+                        <h2>Address Details</h2>
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="fname">First Name</label>
+                                    <input type="text" id="fname" class="form-control" placeholder="Your firstname" name="firstname">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="lname">Last Name</label>
+                                    <input type="text" id="lname" class="form-control" placeholder="Your lastname" name="lastname">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="fname">Address</label>
+                                    <input type="text" id="address" class="form-control"
+                                        placeholder="Enter Your Address" name="address">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="companyname">City</label>
+                                    <input type="text" id="towncity" class="form-control" placeholder="City" name="city">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="stateprovince">State</label>
+                                    <input type="text" id="fname" class="form-control" placeholder="State" name="state">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="lname">Postal Code</label>
+                                    <input type="text" id="zippostalcode" class="form-control" placeholder="Postal" name="pincode">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="email">E-mail Address</label>
+                                    <input type="text" id="email" class="form-control" placeholder="E-mail" name="email">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="Phone">Mobile Number</label>
+                                    <input type="text" id="zippostalcode" class="form-control"
+                                        placeholder="Mobile number" name="mobile">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                   <button type="submit" class="btn btn-success" >Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <%- include('../partials/ufooter') %>
+</body>
+
+</html>

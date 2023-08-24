@@ -1,5 +1,6 @@
 const users = require("../model/users");
 const cat = require("../model/category");
+const Cart = require("../model/cart");
 const bcrypt = require("bcrypt");
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -107,7 +108,7 @@ module.exports = {
       console.log(error);
     }
   },
-  getCheckUser: (req, res) => {
+  getCheckUser: async(req, res) => {
     if (req.session.user) {
       res.status(200).json({ success: true });
     } else {
@@ -186,5 +187,58 @@ module.exports = {
       console.log(err);
     }
   },
+
+  getUserProfile: (req,res)=>{
+    let user=req.session.user
+    res.render("user/userprofile" ,{user})
+  },
+  getManageAddress: async (req,res)=>{
+    let user=req.session.user
+    let userdata= await users.findOne({_id:user._id})
+    const addressArray = userdata.address
+
+    res.render("user/address-manage" ,{user, addressArray})
+  },
+  getAddAddress:(req,res)=>{
+    let user=req.session.user
+    res.render("user/address-add" ,{user})
+  },
+  postAddAddress:async(req,res,next)=>{
+    const userId = req.session.user._id
+    const newAddress = {
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      address: req.body.address,
+      city: req.body.city,
+      state: req.body.state,
+      pincode: req.body.pincode,
+      email: req.body.email,
+      mobile: req.body.mobile,
+    };
+    
+    try {
+      const user = await users.findById(userId);
+      user.address.push(newAddress)
+      await user.save()
+      res.redirect("/address/manage")
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  getCheckout: async (req,res,next)=>{
+ 
+    try {
+      let user=req.session.user
+      let userdata= await users.findOne({_id:user._id})
+      let cartDetails = await Cart.findOne({ user: user._id }).populate({path:"items.productId"})
+
+      const addressArray = userdata.address
+
+      res.render("user/checkout" ,{addressArray,cartDetails})
+    } catch (error) {
+      next(error)
+    }
+  }
 
 };

@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+	<title>EcoLight</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<%- include('../partials/ustylesheets') %>
+</head>
+
+<body>
+	<%- include('../partials/uheader',{title:""}) %>
+		<div class="breadcrumbs">
+			<div class="container">
+				<div class="row">
+					<div class="col">
+						<p class="bread"><span><a href="index.html">Home</a></span> / <span>Shopping Cart</span></p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="colorlib-product">
+			<div class="container">
+				<div class="row row-pb-lg">
+					<div class="col-sm-10 offset-md-1">
+						<div class="process-wrap">
+							<div class="process text-center active">
+								<p><span>01</span></p>
+								<h3>Shopping Cart</h3>
+							</div>
+							<div class="process text-center active">
+								<p><span>02</span></p>
+								<h3>Checkout</h3>
+							</div>
+							<div class="process text-center">
+								<p><span>03</span></p>
+								<h3>Order Complete</h3>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-8">
+						<div class="flex-grow-1">
+							<div>
+								<a href="/address/add"><button class="btn btn-success" style="margin-bottom: 20px;">Add
+										Address</button></a>
+							</div>
+							<% addressArray.forEach((user,index)=> { %>
+								<div
+									style="background-color: rgb(235, 235, 235);  padding: 10px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-bottom: 20px;">
+
+									<input type="checkbox" class="biobevelCheckbox" value="<%= user._id %>"  <% if (index === 0) { %> checked <% } %>
+										onclick="updatePlaceOrderLink(this)">
+									<p style="margin:2px 0"><span>
+											<%= user.firstname %>
+												<%= user.lastname %>
+										</span> </p>
+									<p style="margin:2px 0"><span>
+											<%= user.address %>
+										</span></p>
+									<p style="margin:2px 0"><span>
+											<%= user.city %>, <%= user.state %>
+										</span></p>
+									<p style="margin:2px 0"><span>
+											<%= user.pincode %>
+										</span></p>
+									<p style="margin:2px 0"><span>Mobile:<%= user.mobile %></span></p>
+
+								</div>
+								<% }); %>
+						</div>
+					</div>
+
+					<div class="col-lg-4">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="cart-detail">
+									<h2>Cart Total</h2>
+									<ul>
+
+										<li><span >Order Total</span><span id="spantotal">
+												<% let totalAmountSum=0; cartDetails.items.forEach(item=> {
+													totalAmountSum += item.productId.price * item.quantity;
+													});
+													// Display the total amount sum
+													%>₹
+													<%= totalAmountSum.toFixed(2) %>
+											</span></li>
+									</ul>
+								</div>
+							</div>
+
+							<div class="w-100"></div>
+
+							<div class="col-md-12">
+								<div class="cart-detail">
+									<h2>Payment Method</h2>
+									<div class="form-group">
+										<div class="col-md-12">
+											<div class="radio">
+												<label><input type="radio" id="man" name="optradio"
+														onchange="radiobuttonlink()" value="Direct Bank Transfer" checked> Direct
+													Bank Tranfer</label>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-md-12">
+											<div class="radio">
+												<label><input type="radio" id="man" name="optradio"
+														onchange="radiobuttonlink()" value="Cash on Deilvery"> Cash on
+													Deilvery</label>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-md-12">
+											<div class="radio">
+												<label><input type="radio" id="man" name="optradio" value="Paypal"
+														onchange="radiobuttonlink()">
+													Paypal</label>
+											</div>
+										</div>
+									</div>
+					
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12 text-center">
+								<p><a href="/ordercomplete" class="btn btn-primary" id="placeOrderBtn">Place an
+										order</a></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<%- include('../partials/ufooter') %>
+			<script>
+				const checkboxes = document.querySelectorAll('.biobevelCheckbox');
+				const placeOrderBtn = document.getElementById('placeOrderBtn');
+				const paymentRadios = document.querySelectorAll('[name="optradio"]');
+				let selectedAddress = checkboxes[0]?.value
+				let selectedPaymentMethod = "Direct Bank Transfer";
+
+				function updatePlaceOrderLink(checkbox) {
+					checkboxes.forEach(item => {
+						if (item !== checkbox) {
+							item.checked = false;
+						}
+					});
+					selectedAddress = checkbox.value
+				}
+
+				function radiobuttonlink() {
+					paymentRadios.forEach(radio => {
+						if (radio.checked) {
+							selectedPaymentMethod = radio.value;
+						}
+					});}
+
+
+					placeOrderBtn.addEventListener('click', function (event) {
+						if(selectedAddress==undefined){
+						event.preventDefault()
+						Toastify({
+                                text: "please choose address",
+                                gravity: "bottom", 
+                                position: "center",
+                                style: {
+                                    background: "#f00",
+                                }
+                            }).showToast();
+						}
+						const orderCompleteLink = `/ordercomplete?selectedAddress=${(selectedAddress)}&selectedPaymentMethod=${(selectedPaymentMethod)}`;
+						placeOrderBtn.href = orderCompleteLink;
+					});
+			</script>
+
+</body>
+
+</html>

@@ -9,12 +9,14 @@
 </head>
 
 <body>
-	<%- include('../partials/uheader', { title: (type === "indoor" ? "indoor" : "outdoor")}) %>
+	<%- include('../partials/uheader', { title: (type==="indoor" ? "indoor" : "outdoor" )}) %>
 		<div class="breadcrumbs">
 			<div class="container">
 				<div class="row">
 					<div class="col">
-						<p class="bread"><span><a href="index.html">Home</a></span> / <span><%= type %></span></p>
+						<p class="bread"><span><a href="index.html">Home</a></span> / <span>
+								<%= type %>
+							</span></p>
 					</div>
 				</div>
 			</div>
@@ -28,8 +30,7 @@
 							<div class="col-sm-12">
 								<div class="side border mb-1">
 									<h3>Brand</h3>
-									<ul 
-									<% const uniqueBrands = [...new Set(products.map(prod => prod.brand))]  
+									<ul <% const uniqueBrands=[...new Set(products.map(prod=> prod.brand))]
 										uniqueBrands.forEach(brand=> { %>
 										<li><input type="checkbox" id="biobevelCheckbox">
 											<a href="#">
@@ -42,13 +43,13 @@
 								</div>
 							</div>
 
-							
+
 							<div class="col-sm-12">
 								<div class="side border mb-1">
 									<h3>Colors</h3>
 									<ul>
-										<% const uniqueColors = [...new Set(products.map(prod => prod.colour))]  
-										uniqueColors.forEach(colour=> { %>
+										<% const uniqueColors=[...new Set(products.map(prod=> prod.colour))]
+											uniqueColors.forEach(colour=> { %>
 											<li><input type="checkbox" id="biobevelCheckbox">
 												<a href="#">
 													<%= colour %>
@@ -99,29 +100,28 @@
 								</div>
 								<% }); %>
 						</div>
+						<div class="row">
+							<div class="col-md-12 text-center">
+								<div class="block-27">
+									<ul>
+										<li><a href="#"><i class="ion-ios-arrow-back"></i></a></li>
+										<% for(let i=1; i<=totalpages;i++) { %>
+										<a href="/product/<%= type %>?page=<%=i%>" ><li class="<%= i == page ? 'active' : '' %>"><span><%=i%></span></li></a>
+										<% }; %>
+										<li><a href="#"><i class="ion-ios-arrow-forward"></i></a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
 					</div>
 
 
 
-					<!-- <div class="row">
-							<div class="col-md-12 text-center">
-								<div class="block-27">
-				               <ul>
-					               <li><a href="#"><i class="ion-ios-arrow-back"></i></a></li>
-				                  <li class="active"><span>1</span></li>
-				                  <li><a href="#">2</a></li>
-				                  <li><a href="#">3</a></li>
-				                  <li><a href="#">4</a></li>
-				                  <li><a href="#">5</a></li>
-				                  <li><a href="#"><i class="ion-ios-arrow-forward"></i></a></li>
-				               </ul>
-				            </div>
-							</div>
-						</div> -->
+				
 				</div>
 			</div>
 		</div>
-	
+
 
 		<%- include('../partials/ufooter') %>
 </body>

@@ -3,6 +3,7 @@ const product = require("../model/products");
 const fs = require('fs');
 const path=require("path")
 const { NetworkContextImpl } = require("twilio/lib/rest/supersim/v1/network");
+const ITEMS_PER_PAGE=6
 module.exports = {
   getProducts: async (req, res) => {
     const products = await product.find({});
@@ -113,4 +114,16 @@ module.exports = {
     }
 
   },
+  getProductListNew: async (req, res) => {
+    const type = req.params.type;
+    const page=req.query.page||1
+    
+    const category = await cat.find({status:"List"});
+    const products = await product.find({ category: type ,status: "List"}).skip(ITEMS_PER_PAGE*(page-1)).limit(ITEMS_PER_PAGE)
+    const productscount = await product.countDocuments({ category: type ,status: "List"})
+    const totalpages=Math.ceil(productscount/ITEMS_PER_PAGE)
+    res.render("user/productlist", { category, products, type ,categories: category,page,totalpages});
+  },
+
+  
 };

@@ -145,15 +145,17 @@
 				const checkboxes = document.querySelectorAll('.biobevelCheckbox');
 				const placeOrderBtn = document.getElementById('placeOrderBtn');
 				const paymentRadios = document.querySelectorAll('[name="optradio"]');
-				let selectedAddress = checkboxes[0]?.value
+				let selectedAddress = checkboxes[0].value
 				let selectedPaymentMethod = "Direct Bank Transfer";
 
 				function updatePlaceOrderLink(checkbox) {
+					selectedAddress = ""
 					checkboxes.forEach(item => {
 						if (item !== checkbox) {
 							item.checked = false;
 						}
 					});
+					if(checkbox.checked)
 					selectedAddress = checkbox.value
 				}
 
@@ -166,7 +168,7 @@
 
 
 					placeOrderBtn.addEventListener('click', function (event) {
-						if(selectedAddress==undefined){
+						if(selectedAddress==""){
 						event.preventDefault()
 						Toastify({
                                 text: "please choose address",

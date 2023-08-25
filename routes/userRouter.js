@@ -29,7 +29,7 @@ router.get("/user/orders",passing.cache,session.authuser,orderController.getOrde
 router.get("/user/orderlist",passing.cache,session.authuser,orderController.getOrderList)
 
 
-router.get("/product/:type",session.authuser,passing.cache,productController.getProductList)
+router.get("/product/:type",passing.cache,productController. getProductListNew)
 router.get("/productlist/productdetail",session.authuser,passing.cache,productController.getProductDetail)
 
 router.get("/cart",passing.cache,session.authuser,cartController.getCart)

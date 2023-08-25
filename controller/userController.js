@@ -37,6 +37,8 @@ module.exports = {
         } else {
           res.render("user/login", { err: "Invalid username or password" });
         }
+      }else {
+        res.render("user/login", { err: "Invalid username or password" });
       }
     } catch (err) {
       console.log(err);

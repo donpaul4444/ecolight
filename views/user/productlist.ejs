@@ -9,18 +9,23 @@
 </head>
 
 <body>
-	<%- include('../partials/uheader', { title: (type==="indoor" ? "indoor" : "outdoor" )}) %>
-		<div class="breadcrumbs">
-			<div class="container">
-				<div class="row">
-					<div class="col">
-						<p class="bread"><span><a href="index.html">Home</a></span> / <span>
-								<%= type %>
-							</span></p>
-					</div>
+	<%- include('../partials/uheader') %>
+
+		<div class="container">
+			<div class="col d-flex justify-content-end mt-2 align-items-center">
+				<div>
+					<label for="dropdown" class="mt-1">Sort by: </label>
+				</div>
+				<div>
+					<select id="dropdown" name="sort" onchange="commonfunction()">
+						<option value="relevance">Relevance</option>
+						<option value="lowhigh">Price: Low to High</option>
+						<option value="highlow">Price: High to Low</option>
+					</select>
 				</div>
 			</div>
 		</div>
+
 
 		<div class="colorlib-product">
 			<div class="container">
@@ -29,13 +34,26 @@
 						<div class="row">
 							<div class="col-sm-12">
 								<div class="side border mb-1">
+									<h3>Category</h3>
+									<ul <% const uniqueCategory=[...new Set(products.map(prod=> prod.category))]
+										uniqueCategory.forEach(category=> { %>
+										<li><input type="checkbox" id="biobevelCheckbox" value="<%= category %>"
+												class="category" onclick="commonfunction()">
+											<%= category%>
+										</li>
+										</option>
+										<% }); %>
+									</ul>
+								</div>
+							</div>
+							<div class="col-sm-12">
+								<div class="side border mb-1">
 									<h3>Brand</h3>
 									<ul <% const uniqueBrands=[...new Set(products.map(prod=> prod.brand))]
 										uniqueBrands.forEach(brand=> { %>
-										<li><input type="checkbox" id="biobevelCheckbox">
-											<a href="#">
-												<%= brand%>
-											</a>
+										<li><input type="checkbox" id="biobevelCheckbox" value="<%= brand %>"
+												class="brand" onclick="commonfunction()">
+											<%= brand%>
 										</li>
 										</option>
 										<% }); %>
@@ -43,14 +61,14 @@
 								</div>
 							</div>
 
-
 							<div class="col-sm-12">
 								<div class="side border mb-1">
 									<h3>Colors</h3>
 									<ul>
 										<% const uniqueColors=[...new Set(products.map(prod=> prod.colour))]
 											uniqueColors.forEach(colour=> { %>
-											<li><input type="checkbox" id="biobevelCheckbox">
+											<li><input type="checkbox" id="biobevelCheckbox" value="<%= colour %>"
+													class="colour" onclick="commonfunction()">
 												<a href="#">
 													<%= colour %>
 												</a>
@@ -60,7 +78,11 @@
 									</ul>
 								</div>
 							</div>
-							<div class="col-sm-12">
+							<div class="col-sm-12 text-right">
+								<button class="btn btn-primary" onclick="resetfunction()">Reset</button>
+							</div>
+
+							<!-- <div class="col-sm-12">
 								<div class="side border mb-1">
 									<h3>Price range</h3>
 									<ul>
@@ -73,7 +95,7 @@
 										</li>
 									</ul>
 								</div>
-							</div>
+							</div> -->
 						</div>
 					</div>
 
@@ -104,26 +126,102 @@
 							<div class="col-md-12 text-center">
 								<div class="block-27">
 									<ul>
-										<li><a href="#"><i class="ion-ios-arrow-back"></i></a></li>
-										<% for(let i=1; i<=totalpages;i++) { %>
-										<a href="/product/<%= type %>?page=<%=i%>" ><li class="<%= i == page ? 'active' : '' %>"><span><%=i%></span></li></a>
-										<% }; %>
-										<li><a href="#"><i class="ion-ios-arrow-forward"></i></a></li>
+										<% if (typeof totalpages !=='undefined' ) {%>
+											<% if (page> 1) { %>
+												<a style="cursor: pointer;" onclick="commonfunction(<%= page - 1 %>)"
+													class="prev">
+													<li><i class="ion-ios-arrow-back"></i></li>
+												</a>
+												<% } %>
+													<% for(let i=1; i<=totalpages;i++) { %>
+														<a style="cursor: pointer;">
+															<li class="<%= i == page ? 'active' : '' %>"
+																onclick="commonfunction(<%=i%>)"><span>
+																	<%=i%>
+																</span></li>
+														</a>
+														<% }; %>
+															<% if (page < totalpages) { %>
+																<a style="cursor: pointer;">
+																	<li><i class="ion-ios-arrow-forward"
+																			onclick="commonfunction(<%= Number(page)+1 %>)"></i>
+																	</li>
+																</a>
+																<% } %>
+																	<% } %>
 									</ul>
 								</div>
 							</div>
 						</div>
 					</div>
-
-
-
-				
 				</div>
 			</div>
 		</div>
 
 
 		<%- include('../partials/ufooter') %>
+			<script>
+
+				const queryParams = new URLSearchParams(window.location.search);
+				const selectedCategory = queryParams.get('category');
+				const categoryCheckbox = document.querySelector('.category');
+				if (selectedCategory) categoryCheckbox.checked = true;
+
+				const selectedBrand = queryParams.get('brand');
+				const brandCheckbox = document.querySelector('.brand');
+				if (selectedBrand) brandCheckbox.checked = true;
+
+				const selectedColour = queryParams.get('colour');
+				const colourCheckbox = document.querySelector('.colour');
+				if (selectedColour) colourCheckbox.checked = true;
+
+
+				const selectedSort = queryParams.get('sort');
+				const dropdown = document.getElementById("dropdown")
+
+				if (selectedSort) {
+
+					for (let i = 0; i < dropdown.options.length; i++) {
+						if (dropdown.options[i].value === selectedSort) {
+							dropdown.options[i].selected = true;
+							break;
+						}
+					}
+				}
+
+				function commonfunction(page) {
+					let str = ""
+					const selectedCategory = document.querySelector('.category:checked');
+					const selectedBrand = document.querySelector('.brand:checked');
+					const selectedColour = document.querySelector('.colour:checked');
+					const selectedSort = document.getElementById("dropdown")
+					if (selectedCategory?.value) {
+						str += `category=${selectedCategory.value}&`
+					}
+					if (selectedBrand?.value) {
+						str += `brand=${selectedBrand.value}&`
+					}
+					if (selectedColour?.value) {
+						str += `colour=${selectedColour.value}&`
+					}
+					if (selectedSort?.value) {
+						str += `sort=${selectedSort.value}&`
+					}
+					if (page) {
+						str += `page=${page}`;
+					}
+
+					window.location.href = "/product?" + str
+				}
+				function resetfunction(){
+					window.location.href = "/product"
+				}
+
+
+
+			</script>
+
+
 </body>
 
 </html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+    const razorpayKey = "<%= key %>"
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const options = {
+        key: razorpayKey,
+        amount: "<%= razorpayorder.amount %>", // Amount in paise (100 paise = 1 INR)
+        currency: 'INR',
+        order_id:"<%= razorpayorder.id %>",
+        name: 'Your Company Name',
+        description: 'Test Payment',
+        image: 'https://your-company-logo-url.com/logo.png', // Replace with your company logo URL
+        handler: function(response) {
+            checkpayment(response)
+            // alert('Payment successful! Payment ID: ' + response.razorpay_payment_id);
+        },
+        prefill: {
+            name: 'John Doe',
+            email: 'john@example.com',
+            contact: '1234567890'
+        },
+        theme: {
+            color: '#F37254'
+        }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+});
+function checkpayment(response){
+    
+    fetch("/razorpay", {
+                    method: "POST",
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                    razorpayOrderId: response.razorpay_order_id,
+                    razorpayPaymentId: response.razorpay_payment_id,
+                    secret: response.razorpay_signature
+                }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status) {
+                            window.location.href="/ordercomplete/page"
+                        }else{
+                            Toastify({
+							text: data.message,
+							gravity: "bottom", // `top` or `bottom`
+							position: "center",
+							style: {
+								background: "#f00",
+							}
+						}).showToast(); 
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error)
+                    })
+}
+
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+
+</body>
+</html>

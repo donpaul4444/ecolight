@@ -16,11 +16,14 @@ const orderSchema = new mongoose.Schema({
     type: Date, 
     default: Date.now, 
   },
+  razorpayid:{
+    type:Object
+  },
   status: {
     type: String,
     required:true,
-    enum:["Placed","Shipped","Cancelled"],
-    default:"Placed"
+    enum:["Placed","Shipped","Cancelled","Pending"],
+    default:"Pending"
   },
   address: 
     {

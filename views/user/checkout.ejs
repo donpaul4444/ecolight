@@ -102,8 +102,7 @@
 										<div class="col-md-12">
 											<div class="radio">
 												<label><input type="radio" id="man" name="optradio"
-														onchange="radiobuttonlink()" value="Direct Bank Transfer" checked> Direct
-													Bank Tranfer</label>
+														onchange="radiobuttonlink()" value="Razorpay" checked> Razorpay</label>
 											</div>
 										</div>
 									</div>
@@ -111,7 +110,7 @@
 										<div class="col-md-12">
 											<div class="radio">
 												<label><input type="radio" id="man" name="optradio"
-														onchange="radiobuttonlink()" value="Cash on Deilvery"> Cash on
+														onchange="radiobuttonlink()" value="COD"> Cash on
 													Deilvery</label>
 											</div>
 										</div>
@@ -119,9 +118,9 @@
 									<div class="form-group">
 										<div class="col-md-12">
 											<div class="radio">
-												<label><input type="radio" id="man" name="optradio" value="Paypal"
+												<label><input type="radio" id="man" name="optradio" value="wallet"
 														onchange="radiobuttonlink()">
-													Paypal</label>
+													Wallet</label>
 											</div>
 										</div>
 									</div>
@@ -131,9 +130,10 @@
 						</div>
 						<div class="row">
 							<div class="col-md-12 text-center">
-								<p><a href="/ordercomplete" class="btn btn-primary" id="placeOrderBtn">Place an
+								<p><a href="" class="btn btn-primary" id="placeOrderBtn">Place an
 										order</a></p>
 							</div>
+							<span class="form-text text-danger"><% if (stockstatus==true) { %> <p>Out of Stock</p><% } %></span>
 						</div>
 					</div>
 				</div>
@@ -146,7 +146,7 @@
 				const placeOrderBtn = document.getElementById('placeOrderBtn');
 				const paymentRadios = document.querySelectorAll('[name="optradio"]');
 				let selectedAddress = checkboxes[0].value
-				let selectedPaymentMethod = "Direct Bank Transfer";
+				let selectedPaymentMethod = "Razorpay";
 
 				function updatePlaceOrderLink(checkbox) {
 					selectedAddress = ""
@@ -183,6 +183,7 @@
 						placeOrderBtn.href = orderCompleteLink;
 					});
 			</script>
+			
 
 </body>
 

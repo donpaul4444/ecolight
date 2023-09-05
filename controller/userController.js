@@ -250,12 +250,13 @@ module.exports = {
  
     try {
       let user=req.session.user
+      let stockstatus=req.query.stockstatus === 'true' ? true : false
       let userdata= await users.findOne({_id:user._id})
       let cartDetails = await Cart.findOne({ user: user._id }).populate({path:"items.productId"})
 
       const addressArray = userdata.address
 
-      res.render("user/checkout" ,{addressArray,cartDetails})
+      res.render("user/checkout" ,{addressArray,cartDetails,stockstatus})
     } catch (error) {
       next(error)
     }

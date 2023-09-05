@@ -6,6 +6,50 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<%- include('../partials/ustylesheets') %>
+		<style>
+			#img-zoomer-box {
+				max-width: 500px !important;
+				height: auto !important;
+				position: relative !important;
+				margin: 10px auto !important;
+			}
+
+			selectedImage {
+				width: 100% !important;
+				height: auto !important;
+			}
+
+			#img-zoomer-box:hover,
+			#img-zoomer-box:active {
+				cursor: zoom-in !important;
+				display: block !important;
+			}
+
+			#img-zoomer-box:hover #img-2,
+			#img-zoomer-box:active #img-2 {
+				opacity: 1 !important;
+			}
+
+			#img-2 {
+				width: 350px !important;
+				height: 350px !important;
+				margin-top: -120px;
+				margin-left: -150px;
+				background: url('/uploads/<%= item.images[0] %>') no-repeat #FFF;
+				box-shadow: 0 5px 10px -2px rgba(0, 0, 0, 0.3);
+				pointer-events: none !important;
+				position: absolute !important;
+				opacity: 0;
+				border: 4px solid whitesmoke;
+				z-index: 99;
+
+
+				border-radius: 100%;
+				display: block;
+				transition: opacity .2s;
+			}
+		</style>
+
 </head>
 
 <body>
@@ -23,20 +67,24 @@
 		<div class="colorlib-product">
 			<div class="container">
 				<div class="row row-pb-lg product-detail-wrap">
-					<div class="col-sm-6">
-						<div class="owl-carousel" style="max-width: 400px;">
-							<% for (let i=0; i < item.images.length; i++) { %>
-								<div class="item">
-									<div class="product-entry border">
-										<a href="#" class="prod-img">
-											<img src="/uploads/<%= item.images[i] %>" class="img-fluid"
-												alt="Image <%= i + 1 %>">
-										</a>
-									</div>
-								</div>
+					<aside class="col-lg-6">
+						<div class="border rounded-4 mb-3 d-flex justify-content-center">
+							<div id="img-zoomer-box">
+								<img id="selectedImage" style="max-width: 100%; max-height: 100vh; margin: auto;"
+									class="rounded-4 fit" src="/uploads/<%= item.images[0] %>" />
+								<div id="img-2"></div>
+							</div>
+						</div>
+						<div class="d-flex justify-content-center mb-3">
+							<% for (i=0; i < item.images.length; i++) { %>
+								<a data-fslightbox="mygallery" class="border mx-1 rounded-2" data-type="image" href="#"
+									onclick="changeImage('<%= item.images[i] %>')" class="item-thumb">
+									<img width="60" height="60" class="rounded-2"
+										src="/uploads/<%= item.images[i] %>" />
+								</a>
 								<% } %>
 						</div>
-					</div>
+					</aside>
 					<div class="col-sm-6">
 						<div class="product-desc">
 							<h2>
@@ -62,28 +110,10 @@
 							</p>
 							<h3 style="font-size: 1rem;">Delivery Options</h3>
 
-							<!-- <div class="input-group mb-4 w-25">
-								<span class="input-group-btn">
-									<button type="button" class="quantity-left-minus btn" data-type="minus"
-										data-field="">
-										<i class="icon-minus2"></i>
-									</button>
-								</span>
-								<input type="text" id="quantity" name="quantity" class="form-control input-number"
-									value="1" min="1" max="100">
-								<span class="input-group-btn ml-1">
-									<button type="button" class="quantity-right-plus btn" data-type="plus"
-										data-field="">
-										<i class="icon-plus2"></i>
-									</button>
-								</span>
-							</div> -->
-
 							<div class="input-group mb-4 w-25">
 								<div class="display-tc">
 									<input type="number" id="quantity" name="quantity"
-										class="form-control input-number text-center" value="0"
-										 min="0" max="10">
+										class="form-control input-number text-center" value="0" min="0" max="10">
 								</div>
 							</div>
 
@@ -91,13 +121,13 @@
 							<div class="row">
 								<div class="col-sm-12 text-center d-flex">
 									<div>
-										<p class="addtocart"><a href=""
-												class="btn btn-success btn-addtocart" id="addToCartButton"><i class="icon-shopping-cart"></i>
+										<p class="addtocart"><a href="" class="btn btn-success btn-addtocart"
+												id="addToCartButton"><i class="icon-shopping-cart"></i>
 												Add to Cart</a></p>
 									</div>
 									<div>
-										<p class="addtocart"><a href=""
-												class="btn btn-success btn-addtocart"><i class="icon-shopping-cart" ></i>
+										<p class="addtocart"><a href="" class="btn btn-success btn-addtocart"><i
+													class="icon-shopping-cart"></i>
 												Buy Now</a></p>
 									</div>
 								</div>
@@ -162,59 +192,70 @@
 		</div>
 
 		<%- include('../partials/ufooter') %>
-			<!-- <script>
-				$(document).ready(function () {
 
-					var quantitiy = 0;
-					$('.quantity-right-plus').click(function (e) {
-
-						// Stop acting like a button
-						e.preventDefault();
-						// Get the field name
-						var quantity = parseInt($('#quantity').val());
-
-						// If is not undefined
-
-						$('#quantity').val(quantity + 1);
-
-
-						// Increment
-
-					});
-
-					$('.quantity-left-minus').click(function (e) {
-						// Stop acting like a button
-						e.preventDefault();
-						// Get the field name
-						var quantity = parseInt($('#quantity').val());
-
-						// If is not undefined
-
-						// Increment
-						if (quantity > 0) {
-							$('#quantity').val(quantity - 1);
-						}
-					});
-
-				});
-			</script> -->
 			<script>
-				document.addEventListener("DOMContentLoaded", function() {
+				document.addEventListener("DOMContentLoaded", function () {
 					const addToCartButton = document.getElementById("addToCartButton");
 					const quantityInput = document.getElementById("quantity");
 					const itemId = '<%= item._id %>';
-				
-					addToCartButton.addEventListener("click", function(event) {
+
+					addToCartButton.addEventListener("click", function (event) {
 						event.preventDefault();
 						const quantityValue = quantityInput.value;
 						const addToCartUrl = `/addcart?productId=${itemId}&quantity=${quantityValue}`;
-				
-						// Redirect to the constructed URL
 						window.location.href = addToCartUrl;
 					});
 				});
-				
+
 			</script>
+			<script>
+				let zoomer = function () {
+					document.querySelector('#img-zoomer-box')
+						.addEventListener('mousemove', function (e) {
+							let original = document.querySelector('#selectedImage'),
+								magnified = document.querySelector('#img-2'),
+								style = magnified.style,
+								x = e.pageX - this.offsetLeft,
+								y = e.pageY - this.offsetTop,
+								imgWidth = original.offsetWidth,
+								imgHeight = original.offsetHeight,
+								xperc = ((x / imgWidth) * 100),
+								yperc = ((y / imgHeight) * 100);
+
+
+							if (x > (.01 * imgWidth)) {
+								xperc += (.15 * xperc);
+							};
+
+							if (y >= (.01 * imgHeight)) {
+								yperc += (.15 * yperc);
+							};
+
+							style.backgroundPositionX = (xperc - 9) + '%';
+							style.backgroundPositionY = (yperc - 9) + '%';
+
+							style.left = (x - 180) + 'px';
+							style.top = (y - 180) + 'px';
+
+						}, false);
+				}();
+			</script>
+			<script>
+				function changeImage(newImageSrc) {
+					document.getElementById('img-2').style.backgroundImage = "url(" + '/uploads/' + newImageSrc + ")";
+					const selectedImage = document.getElementById('selectedImage');
+					const selectedImageLink = document.getElementById('selectedImageLink');
+
+					selectedImage.setAttribute('src', "/uploads/" + newImageSrc);
+					selectedImageLink.setAttribute('href', "/uploads/" + newImageSrc);
+				}
+			</script>
+
+
+
+
+
+
 </body>
 
 </html>

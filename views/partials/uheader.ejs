@@ -10,13 +10,13 @@
                     </div>
 
                     <div class="col-sm-5 col-md-3">
-                        <form action="#" class="search-wrap">
+                        <div class="search-wrap" >
                             <div class="form-group">
-                                <input type="search" class="form-control search" placeholder="Search">
-                                <button class="btn btn-primary submit-search text-center" type="submit"><i
+                                <input type="search" class="form-control search" placeholder="Search" name="search" id="searchvalue">
+                                <button class="btn btn-primary submit-search text-center" type="submit" onclick="searchfunction()"><i
                                         class="icon-search"></i></button>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -24,21 +24,10 @@
 
                         <div>
                             <ul>
-                                <li class="<% if (title === 'Home') { %>active<% } %>"><a href="/">Home</a></li>
-                                <% if (typeof categories !=='undefined' ) { %>
-                                    <% categories.forEach(cat=> { %>
-                                        <li class="<% if (title === cat.name) { %>active<% } %>">
-                                            <a href="/product/<%= cat.catname %>">
-                                                <%= cat.catname %>
-                                            </a>
-                                        </li>
-                                        <% }); %>
-                                            <% } %>
-
-                                                <li class="<% if (title === 'About') { %>active<% } %>"><a
-                                                        href="/about">About</a></li>
-                                                <li class="<% if (title === 'Contact') { %>active<% } %>"><a
-                                                        href="/contact">Contact</a></li>
+                                <li><a href="/">Home</a></li>
+                                <li><a href="/product">All Products</a></li>
+                                <li><a href="/about">About</a></li>
+                                <li><a href="/contact">Contact</a></li>
                             </ul>
                         </div>
 
@@ -46,7 +35,6 @@
                             <ul>
                                 <li><a href="/cart"><i class="icon-shopping-cart"></i> Cart</a></li>
                                 <li><a href="/userprofile"><i class="fas fa-user fa-lg"></i></a></li>
-
                                 <li id="loginbutton" hidden><a href="/login"><button class="btn btn-dark btn-sm"
                                             type="button">Login</button></a></li>
                                 <li id="logoutbutton" hidden><a href="/logout"><button class="btn btn-dark btn-sm"
@@ -74,7 +62,7 @@
             .then(data => {
                 if (data.success) {
                     logoutbutton.hidden = false
-                 
+
                 } else {
                     loginbutton.hidden = false
                 }
@@ -82,4 +70,12 @@
             .catch(error => {
                 console.error("Error:", error)
             })
+
+
+            function searchfunction() {
+					
+					const searchvalue = document.getElementById("searchvalue").value
+					window.location.href=`/product?search=${encodeURIComponent(searchvalue)}`
+				}
+
     </script>

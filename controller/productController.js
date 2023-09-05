@@ -1,9 +1,8 @@
 const cat = require("../model/category");
 const product = require("../model/products");
-const fs = require('fs');
-const path=require("path")
-const { NetworkContextImpl } = require("twilio/lib/rest/supersim/v1/network");
-const ITEMS_PER_PAGE=6
+const fs = require("fs");
+const path = require("path");
+const ITEMS_PER_PAGE = 6;
 module.exports = {
   getProducts: async (req, res) => {
     const products = await product.find({});
@@ -34,7 +33,7 @@ module.exports = {
       next(error);
     }
   },
-  listProduct: async (req, res,next) => {
+  listProduct: async (req, res, next) => {
     const id = req.query.id;
     try {
       const data = await product.findById(id);
@@ -44,9 +43,9 @@ module.exports = {
         data.status = "List";
       }
       await data.save();
-      res.redirect("/admin/products")
+      res.redirect("/admin/products");
     } catch (err) {
-      next(err)
+      next(err);
     }
   },
   getEditProduct: async (req, res) => {
@@ -70,7 +69,7 @@ module.exports = {
       prod.price = data.price;
       prod.lights = data.lights;
       prod.category = data.category;
-      prod.quantity=data.quantity
+      prod.quantity = data.quantity;
 
       if (req.files) {
         req.files.forEach((element) => {
@@ -85,45 +84,76 @@ module.exports = {
     }
   },
 
-  getProductList: async (req, res) => {
-    const type = req.params.type;
-    const category = await cat.find({status:"List"});
-    const products = await product.find({ category: type ,status: "List"});
-    res.render("user/productlist", { category, products, type ,categories: category});
-  },
   getProductDetail: async (req, res) => {
     const id = req.query.id;
-    let categories = await cat.find({status:"List"});
+    let categories = await cat.find({ status: "List" });
     const item = await product.findById(id);
-    res.render("user/productdetail", { item ,categories: categories});
+    res.render("user/productdetail", { item, categories: categories });
   },
-  deleteImage: async (req,res,next)=>{
-    const id= req.query.id
-    const imageid= req.query.imageid
- 
+  deleteImage: async (req, res, next) => {
+    const id = req.query.id;
+    const imageid = req.query.imageid;
+
     try {
-     const item = await product.findById(id);
-      item.images = item.images.filter(img => img !== imageid);
+      const item = await product.findById(id);
+      item.images = item.images.filter((img) => img !== imageid);
       await item.save();
 
-      const imagePath = path.join(__dirname,'..','public', 'uploads', imageid); 
+      const imagePath = path.join(
+        __dirname,
+        "..",
+        "public",
+        "uploads",
+        imageid
+      );
       fs.unlinkSync(imagePath);
       res.status(200).json({ status: true });
     } catch (err) {
-     next(err)
+      next(err);
     }
-
   },
-  getProductListNew: async (req, res) => {
-    const type = req.params.type;
-    const page=req.query.page||1
-    
-    const category = await cat.find({status:"List"});
-    const products = await product.find({ category: type ,status: "List"}).skip(ITEMS_PER_PAGE*(page-1)).limit(ITEMS_PER_PAGE)
-    const productscount = await product.countDocuments({ category: type ,status: "List"})
-    const totalpages=Math.ceil(productscount/ITEMS_PER_PAGE)
-    res.render("user/productlist", { category, products, type ,categories: category,page,totalpages});
-  },
+  getProductListNew: async (req, res, next) => {
+    try {
+      const page = req.query.page || 1;
+      const partialName = req.query.search;
+      const category = req.query.category;
+      const brand= req.query.brand
+      const colour=req.query.colour
+      const sort=req.query.sort
 
-  
+      let filter = { status: "List" };
+
+      if (partialName) {
+        const nameRejex = new RegExp(`^${partialName}`, "i");
+        filter.name = nameRejex;
+      }
+      if (category)  filter.category = category;
+      if(brand) filter.brand=brand
+      if(colour)filter.colour=colour
+
+
+      const sortOptions = {};
+
+if (sort === 'lowhigh') {
+    sortOptions.price = 1;
+} else if (sort === 'highlow') {
+    sortOptions.price = -1; 
+}
+
+      const products = await product
+        .find(filter)
+        .sort(sortOptions) 
+        .skip(ITEMS_PER_PAGE * (page - 1))
+        .limit(ITEMS_PER_PAGE);
+      const productscount = await product.countDocuments(filter);
+      const totalpages = Math.ceil(productscount / ITEMS_PER_PAGE);
+      res.render("user/productlist", {
+        products,
+        page,
+        totalpages,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 };

@@ -27,9 +27,11 @@ router.get("/checkout",passing.cache,session.authuser,userController.getCheckout
 router.get("/ordercomplete",passing.cache,session.authuser,orderController.getOrderComplete)
 router.get("/user/orders",passing.cache,session.authuser,orderController.getOrders)
 router.get("/user/orderlist",passing.cache,session.authuser,orderController.getOrderList)
+router.post("/razorpay",passing.cache,session.authuser,orderController.postRazorpay)
+router.get("/ordercomplete/page",passing.cache,session.authuser,orderController.getOrderCompletePage)
 
 
-router.get("/product/:type",passing.cache,productController. getProductListNew)
+router.get("/product",passing.cache,productController. getProductListNew)
 router.get("/productlist/productdetail",session.authuser,passing.cache,productController.getProductDetail)
 
 router.get("/cart",passing.cache,session.authuser,cartController.getCart)

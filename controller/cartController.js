@@ -1,6 +1,7 @@
 const Cart = require("../model/cart");
 const cat = require("../model/category");
 const Product = require("../model/products");
+const coupon= require("../model/coupons")
 
 module.exports = {
   getCart: async (req, res, next) => {
@@ -9,8 +10,9 @@ module.exports = {
     try {
       let categories = await cat.find({ status: "List" });
       let cartDetails = await Cart.findOne({ user: id }).populate({path:"items.productId"})
+      let coupons= await coupon.find({status:"List"})
       
-        res.render("user/cart", { cartDetails, categories });
+        res.render("user/cart", { cartDetails, categories,coupons });
  
 
     } catch (error) {

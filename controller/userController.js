@@ -1,11 +1,13 @@
 const users = require("../model/users");
 const cat = require("../model/category");
 const Cart = require("../model/cart");
+const coupon=require("../model/coupons")
 const bcrypt = require("bcrypt");
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require("twilio")(accountSid, authToken);
 const sid = process.env.TWILIO_SID;
+const ITEMS_PER_PAGE = 6;
 
 module.exports = {
   getHome: async (req, res) => {
@@ -166,9 +168,13 @@ module.exports = {
 
 
   getCustomers: async (req, res) => {
-    let customers = await users.find({});
+    const page = req.query.page || 1;
+    const userscount = await users.countDocuments({});
+    const totalpages = Math.ceil(userscount / ITEMS_PER_PAGE);
+    let customers = await users.find({}).skip(ITEMS_PER_PAGE * (page - 1))
+    .limit(ITEMS_PER_PAGE);
     try {
-      res.render("admin/customers", { customers });
+      res.render("admin/customers", { customers,page,totalpages});
     } catch (err) {
       console.log(err);
     }
@@ -247,16 +253,38 @@ module.exports = {
 
 
   getCheckout: async (req,res,next)=>{
- 
+   const couponid=req.query.couponid
     try {
       let user=req.session.user
       let stockstatus=req.query.stockstatus === 'true' ? true : false
+      let walletstatus=req.query.walletstatus === 'true' ? true : false
       let userdata= await users.findOne({_id:user._id})
       let cartDetails = await Cart.findOne({ user: user._id }).populate({path:"items.productId"})
+      
+      let totalprice = 0;
+    
 
+      if (cartDetails) {
+        cartDetails.items.forEach((item) => {
+          const price = item.productId.price * item.quantity;
+          totalprice += price;
+        });
+      }
+
+      if(couponid){
+        let couponvalue= await coupon.findById({_id:couponid})
+        let couponprice= (totalprice/100)*couponvalue.percentage
+        if(couponprice>couponvalue.maxamount){
+          couponprice=couponvalue.maxamount
+        }
+        totalprice=totalprice-couponprice
+      }
+      
+    
+    
       const addressArray = userdata.address
 
-      res.render("user/checkout" ,{addressArray,cartDetails,stockstatus})
+      res.render("user/checkout" ,{addressArray,cartDetails,stockstatus,totalprice,couponid,walletstatus})
     } catch (error) {
       next(error)
     }

@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>EcoLight</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <%- include('../partials/ustylesheets') %>
+</head>
+
+<body>
+
+    <%- include('../partials/uheader',{title:"" }) %>
+
+        <div class="container" style="min-height: 500px;">
+
+            <div class="d-flex" style="gap:100px; margin-top: 50px;">
+                <div class="flex-grow-0" style="width: 200px; flex-shrink: 0;">
+                    <%- include('../partials/usersidebar',{option:"wallet"}) %>
+                </div>
+                <div class="flex-grow-1">
+                    <div
+                        style="background-color: rgb(235, 235, 235); padding: 10px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-bottom: 20px;">
+                      <div>Wallet Balance:</div> 
+                      <div style="font-size: 18px; font-weight: bold;">₹<%= userwallet.total %></div></div>
+
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+
+                                            <th>Index</th>
+                                            <th>Title</th>
+                                            <th>Date</th>
+                                            <th>Credit</th>
+                                            <th>Debit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% userwallet.items.forEach((item,index)=> { %>
+                                        <tr>
+
+                                            <td style="width: 10%;">
+                                                <h6 class="mb-0 title">
+                                                    <%= index+1 %>
+                                                </h6>
+                                            </td>
+                                            <td style="width: 40%;">
+                                                <%= item.title %>
+                                            </td>
+                                            <td style="width: 20%;">
+                                                <%= item.orderDate.toLocaleDateString() %>
+                                            </td>
+                                            <td style="width: 20%;">
+                                                ₹<%= item.credit %>
+                                            </td>
+                                            <td style="width: 20%;">
+                                                ₹<%= item.debit %>
+                                            </td>
+                                            <% }); %>
+
+                                    </tbody>
+                                </table> <!-- table-responsive.// -->
+                            </div>
+                        </div> <!-- card-body end// -->
+                    </div> <!-- card end// -->
+                </div>
+            </div>
+        </div>
+
+                <%- include('../partials/ufooter') %>
+</body>
+
+</html>

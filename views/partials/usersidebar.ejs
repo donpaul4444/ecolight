@@ -12,14 +12,19 @@
             Manage Addressess
         </div>
     </a>
-    <a href="#">
-        <div class="side border mb-1">
-            My wallet
+    <a href="/wishlist">
+        <div class="side border mb-1; <% if (option === 'wishlist') { %>selected<% } %>">
+            Wishlist
         </div>
     </a>
     <a href="/user/orders">
         <div class="side border mb-1; <% if (option === 'orders') { %>selected<% } %>">
             My orders
+        </div>
+    </a>
+    <a href="/wallet">
+        <div class="side border mb-1; <% if (option === 'wallet') { %>selected<% } %>">
+           Wallet
         </div>
     </a>
 </div>

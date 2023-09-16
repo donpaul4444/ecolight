@@ -1,10 +1,14 @@
-const { NetworkContextImpl } = require("twilio/lib/rest/supersim/v1/network");
 const cat = require("../model/category");
+const ITEMS_PER_PAGE = 6;
 module.exports = {
   getCategories: async (req, res) => {
-    let category = await cat.find({});
+    const page = req.query.page || 1;
+    const categorycount = await cat.countDocuments({});
+    const totalpages = Math.ceil(categorycount / ITEMS_PER_PAGE);
+    let category = await cat.find({}).skip(ITEMS_PER_PAGE * (page - 1))
+    .limit(ITEMS_PER_PAGE);
     try {
-      res.render("admin/categories", { category });
+      res.render("admin/categories", { category,page,totalpages });
     } catch (err) {
       console.log(err);
     }

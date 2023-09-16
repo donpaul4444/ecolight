@@ -15,11 +15,15 @@
     <meta property="og:url" content="">
     <meta property="og:image" content="">
     <%- include('../partials/astylesheet') %>
+
 </head>
 
 <body>
-    <%- include('../partials/aheader',{title:"products"}) %>
+    <%- include('../partials/aheader',{title:"coupons"}) %>
+
         <section class="content-main main-wrap">
+
+
             <!-- Modal -->
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                 aria-hidden="true">
@@ -42,67 +46,74 @@
                     </div>
                 </div>
             </div>
+
+
             <div class="content-header">
                 <div>
-                    <h2 class="content-title card-title">Products List</h2>
+                    <h2 class="content-title card-title">Coupons</h2>
                 </div>
                 <div>
-                    <a href="/admin/addproduct" class="btn btn-primary btn-sm rounded">Add product</a>
+                    <a href="/admin/coupons/add" class="btn btn-primary btn-sm rounded">Add Counpon</a>
                 </div>
             </div>
+
+
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                              
-                                    <th>Name</th>
-                                    <th>Price</th>
-                                    <th>Brand</th>
-                                    <th>Action</th>
-                                    <th>Status</th>
+                                    <th>Coupon Name</th>
+                                    <th>Percentage</th>
+                                    <th>Minamount</th>
+                                    <th>Maxamount</th>
+                                    <th>Edit</th>
+                                    <th>List/UnList</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <% products.forEach((prod,index)=> { %>
+                                <% coupons.forEach((coupon,index)=> { %>
                                     <tr>
-                                     
+                                      
                                         <td style="width: 20%;">
-                                            <h6 class="mb-0">
-                                                <%= prod.name %>
+                                            <h6 class="mb-0 title">
+                                                <%= coupon.name %>
                                             </h6>
                                         </td>
                                         <td style="width: 20%;">
-                                            <span>₹<%= prod.price %></span>
+                                            <%= coupon.percentage %>
                                         </td>
                                         <td style="width: 15%;">
-                                            <span>
-                                                <%= prod.brand %>
-                                            </span>
+                                            <%= coupon.minamount %>
                                         </td>
                                         <td style="width: 15%;">
-                                            <a href="/admin/product/edit?id=<%= prod._id %>"
-                                                class="btn btn-sm font-sm rounded btn-brand">
-                                                <i class="material-icons md-edit"></i> Edit
-                                            </a>
+                                            <%= coupon.maxamount %>
                                         </td>
-                                        <td>
-                                            <button type="button"
-                                                onclick="deleteconfirm('<%= prod._id %>','<%= prod.status %>')"
-                                                class="btn btn-sm font-sm btn-light rounded <%= prod.status === 'List' ? 'alert-success' : 'alert-danger' %>"
-                                                data-toggle="modal" data-target="#deleteModal" style="width: 80px;">
-                                                <%= prod.status %>
-                                            </button>
+                                        <td style="width: 15%;">
+                                            <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
+                                                <a href="/admin/coupons/edit?id=<%= coupon._id %>"
+                                                    class="btn btn-sm font-sm rounded btn-brand" style="width: 80px;">
+                                                    <i class="material-icons md-edit"></i> Edit</a>
+                                            </div>
+                                        </td>
+                                        <td style="width: 15%;">
+                                            <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
+                                                <button type="button"
+                                                    onclick="deleteconfirm('<%= coupon._id %>','<%= coupon.status %>')"
+                                                    class="btn btn-sm font-sm btn-light rounded <%= coupon.status === 'List' ? 'alert-success' : 'alert-danger' %>"
+                                                    data-toggle="modal" data-target="#deleteModal" style="width: 80px;">
+                                                    <%= coupon.status %>
+                                                </button>
+                                            </div>
                                         </td>
 
                                         <% }); %>
                             </tbody>
-                        </table> <!-- table-responsive.// -->
+                        </table>
                     </div>
                 </div> <!-- card-body end// -->
             </div> <!-- card end// -->
-          
             <div class="pagination-area mt-15 mb-50 d-flex justify-content-center">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-start">
@@ -119,9 +130,10 @@
                 </nav>
             </div>
 
-
         </section> <!-- content-main end// -->
+        </main>
         <%- include('../partials/afooter') %>
+
 
             <script>
                 let deleteid = ""
@@ -134,25 +146,23 @@
                         value = "List"
                     }
                     const spanalert = document.getElementById("spanalert");
-                    spanalert.innerHTML = `You want to ${value} this product?`
+                    spanalert.innerHTML = `You want to ${value} this coupon?`
                     $('#exampleModal').modal('show')
                 }
+
                 function confirmDeleteInModal() {
-                    const redirectUrl = `/admin/product/list?id=${deleteid}`;
+                    const redirectUrl = `/admin/coupons/list?id=${deleteid}`;
                     window.location.href = redirectUrl;
                 }
-
-
+                
                 function commonfunction(page) {
-            	window.location.href = `/admin/products?page=${page}`
+            	window.location.href = `/admin/coupons?page=${page}`
 				}
 
             </script>
 </body>
 
-</body>
 
-
-
+<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-products-list.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:12 GMT -->
 
 </html>

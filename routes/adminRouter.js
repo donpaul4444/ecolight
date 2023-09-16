@@ -5,6 +5,7 @@ const categoryController= require("../controller/categoryController")
 const productController=require("../controller/productController")
 const userController=require("../controller/userController")
 const orderController=require("../controller/orderController")
+const couponController=require("../controller/couponsController")
 const session=require("../middleware/auth")
 const passing=require("../middleware/cache")
 
@@ -15,6 +16,13 @@ router.post("/admin/catpost",upload.single('image'),passing.cache,session.authad
 router.get("/admin/cat/list",passing.cache,session.authadmin,categoryController.listCategory)
 router.get("/admin/category/editcat",passing.cache,session.authadmin,categoryController.getEditCategory)
 router.post("/admin/cat/edit",passing.cache,session.authadmin,upload.single('image'),categoryController.postEditCategory)
+
+router.get("/admin/coupons",passing.cache,session.authadmin,couponController.getCoupons)
+router.get("/admin/coupons/add",passing.cache,session.authadmin,couponController.getAddCoupons)
+router.post("/admin/coupons/add",passing.cache,session.authadmin,couponController.postAddCoupons)
+router.get("/admin/coupons/list",passing.cache,session.authadmin,couponController.listCoupons)
+router.get("/admin/coupons/edit",passing.cache,session.authadmin,couponController.getEditCoupons)
+router.post("/admin/coupons/edit",passing.cache,session.authadmin,couponController.postEditCoupons)
 
 router.get("/admin",passing.cache,userController.getAdminLogin)
 router.post("/admin/login",passing.cache,userController.postAdminLogin)

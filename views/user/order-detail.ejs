@@ -11,6 +11,29 @@
 <body>
 
     <%- include('../partials/uheader',{title:"" }) %>
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">ALERT</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <span id="spanalert">Are you sure you want to return this item and process the refund?</span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" id="deletebutton" class="btn btn-primary"
+                                onclick="modalok()">Ok</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
         <div class="container" style="min-height: 500px;">
 
@@ -24,17 +47,14 @@
                             <%= order._id %>
                         </span></p>
                     <p style="margin:2px 0 "><span style="font-weight: bold; font-size: 15px;">Ordered On: </span><span>
-                            <%=  order.orderDate.toLocaleDateString() %>
+                            <%= order.orderDate.toLocaleDateString() %>
                         </span></p>
-                    <p style="margin:2px 0 "><span style="font-weight: bold; font-size: 15px;">Status: </span><span>
-                            <%= order.status %>
-                        </span></p>
+
                     <p style="margin:2px 0 "><span style="font-weight: bold; font-size: 15px;">Payment mode:
                         </span><span>
                             <%= order.paymentmethod %>
                         </span></p>
-                    <div
-                        style=" background-color: rgb(235, 235, 235);  padding: 10px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-bottom: 20px;">
+                    <div style="  margin-bottom: 20px;">
                         <p style="margin:2px 0 "><span style="font-weight: bold; font-size: 15px;">Address: </span></p>
                         <p style="margin:2px 0"><span>
                                 <%= order.address.firstname %>
@@ -51,47 +71,159 @@
                             </span></p>
                         <p style="margin:2px 0"><span>Mobile:<%= order.address.mobile %></span></p>
                     </div>
-                    <div
-                        style=" background-color: rgb(235, 235, 235); padding: 10px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-bottom: 20px; border: 1px solid black;">
-                        <div style="border-bottom: 1px solid black;">
-                            <p><span style="font-weight: bold; font-size: 15px;">Items In This Order</span></p>
-                        </div>
-                        <% order.items.forEach(item=> { %>
-                            <div class="d-flex justify-content-between align-items-center"
-                                style="margin-top:10px ; padding-bottom:10px ;border-bottom: 1px solid black;">
-                                <div style="margin-left: 15px;"> <img src="/uploads/<%= item.productId.images[0] %>"
-                                        width="125" height="150" alt="Item"></div>
-                                <div>
-                                    <p style="margin:2px 0"><span>Brand: <%= item.productId.brand %></span></p>
-                                </div>
-                                <div>
-                                    <p style="margin:2px 0"><span>Name: <%= item.productId.name %></span></p>
-                                </div>
-                                <div>
-                                    <p style="margin:2px 0"><span> price: ₹<%= item.productId.price %></span></p>
-                                </div>
-                                <div style="margin-right: 15px;">
-                                    <p style="margin:2px 0"><span> Qnty: <%= item.quantity %></span></p>
-                                </div>
-                            </div>
-                            <% }); %>
-                            <div style=" text-align: right; padding-top: 15px;">
-                                <p style="font-weight: bold; font-size: 20px;">
-                                    <span style="font-weight: bold; font-size: 15px;">Total Price:</span>
-                                    ₹<%= order.totalprice %>
-                                </p>
-                            </div>
-                            
-                            
+                    <% order.items.forEach(item=> { %>
+                        <% if (item._id==itemid) { %>
+                            <div
+                                style=" background-color: rgb(235, 235, 235); padding: 10px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-bottom: 20px;">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex" style="gap: 20px;">
+                                        <div style="margin-left: 15px;"> <img
+                                                src="/uploads/<%= item.productId.images[0] %>" width="125" height="150"
+                                                alt="Item"></div>
+                                        <div>
+                                            <p style="margin:2px 0; font-size: 18px; font-weight: bold;"><span>
+                                                    <%= item.productId.brand %>
+                                                </span></p>
+                                            <p style="margin:2px 0; font-size: 14px; font-weight: bold;"><span>
+                                                    <%= item.productId.name %>
+                                                </span></p>
+                                            <p style="margin:2px 0; font-size: 14px; font-weight: bold;"><span>₹<%=
+                                                        item.productId.price %></span></p>
+                                            <p style="margin:2px 0; font-size: 14px; font-weight: bold;"><span> Qnty:
+                                                    <%= item.quantity %>
+                                                </span></p>
+                                            <p style="margin:2px 0; font-size: 14px; font-weight: bold;">
+                                                <span>Status:</span><span id="status"><%= item.status %></span></p>
+                                        </div>
+                                    </div>
+                                    <div style="margin-right: 15px; ">
 
-                    </div>
+                                        <p style="margin:2px 0; font-size: 14px; font-weight: bold;">Amount &nbsp;:₹<%=
+                                                item.productId.price * item.quantity%>
+                                        </p>
+                                        <p style="margin:2px 0; font-size: 14px; font-weight: bold;">Discount:₹<%=
+                                                item.discountprice %>
+                                        </p>
+                                        <p style="margin:2px 0; font-size: 18px; font-weight: bold;">
+                                            Total&nbsp;&nbsp;&nbsp;&nbsp;:₹<%= item.finalprice %>
+                                        </p>
+
+                                    </div>
+
+                                </div>
+                                <div style="margin-left: 640px;">
+                                    <div id="cancelOrderDiv">
+                                        <button class="btn btn-danger"
+                                            onclick='cancel("<%= order._id %>","<%= item._id %>")'>Cancel
+                                            Order</button>
+                                    </div>
+                                    <div id="returnDiv" style="display:none">
+                                       <button class="btn btn-success" data-toggle="modal" onclick='confirmreturn("<%= order._id %>","<%= item._id %>")'>Return
+                                            Product</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <% } %>
+                                <% }); %>
+                                
+                                <% if (order.items.length>1) { %>
+                                    <div style=" margin-bottom: 20px;">
+                                        <div>
+                                            <p><span style="font-weight: bold; font-size: 15px;">Other Items In This
+                                                    Order</span></p>
+                                        </div>
+                                        <% } %>
+                                        <% order.items.forEach(item=> { %>
+                                            <% if (item._id!=itemid) { %>
+                                                <div class="d-flex align-items-center justify-content-between"
+                                                    style="margin-top:10px ; padding-bottom:10px ;">
+                                                    <div class="d-flex" style="gap: 20px;">
+                                                        <div style="margin-left: 15px;"> <img
+                                                                src="/uploads/<%= item.productId.images[0] %>"
+                                                                width="125" height="150" alt="Item"></div>
+                                                        <div>
+                                                            <p style="margin:2px 0; font-size: 16px;"><span>
+                                                                    <%= item.productId.brand %>
+                                                                </span></p>
+                                                            <p style="margin:2px 0; font-size: 12px;"><span>
+                                                                    <%= item.productId.name %>
+                                                                </span></p>
+                                                            <p style="margin:2px 0; font-size: 12px;"><span>₹<%=
+                                                                        item.productId.price %>
+                                                                </span></p>
+                                                            <p style="margin:2px 0; font-size: 12px;"><span> Qnty: <%=
+                                                                        item.quantity %>
+                                                                </span></p>
+                                                        </div>
+                                                    </div>
+                                                    <div style="margin-right: 15px;">
+                                                        <p style="margin:2px 0; font-size: 12px;"><span>Status: <%=
+                                                                    item.status %>
+                                                            </span></p>
+                                                    </div>
+                                                </div>
+                                                <% } %>
+                                                    <% }); %>
+
+                                    </div>
                 </div>
+
             </div>
+        </div>
 
         </div>
 
 
         <%- include('../partials/ufooter') %>
+            <script>
+                let orderid=""
+                let itemid=""
+                document.addEventListener("DOMContentLoaded", function () {
+                    const status = document.getElementById("status").innerText;
+                    console.log(status);
+                    if (status == "Cancelled" || status == "Delivered"|| status == "Returned") {
+                        const cancelOrderDiv = document.getElementById("cancelOrderDiv");
+                        cancelOrderDiv.style.display = "none";
+                    }
+
+                    if (status === "Delivered") {
+                        const returnDiv = document.getElementById("returnDiv");
+                        returnDiv.style.display = "block";
+                    }
+                });
+
+
+
+                function cancel(orderid, itemid) {
+
+                    fetch(`/cancelorder?orderid=${orderid}&itemid=${itemid}`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                window.location.href = `/user/orderlist?orderid=${orderid}&itemid=${itemid}`
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error:", error)
+                        })
+                }
+
+                function confirmreturn(order,item){
+                     orderid=order
+                     itemid=item
+                    $('#exampleModal').modal('show')
+                }
+
+                function modalok(){
+                    const redirectUrl = `/addwallet?orderid=${orderid}&itemid=${itemid}`;
+                    window.location.href = redirectUrl;
+                }
+            </script>
 </body>
 
 </html>

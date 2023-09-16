@@ -13,6 +13,13 @@ const productSchema = new mongoose.Schema({
     enum:["Philips","Sinoman","Homesake","Eliante","Crompton"],
     required: true,
   },
+  wishlist: {
+    type: String,
+    enum:["list","unlist"],
+    required: true,
+    default: 'unlist',
+  },
+
   colour: {
     type: String,
     enum:["White","Warm","Red","Green","Blue"],

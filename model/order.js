@@ -12,6 +12,13 @@ const orderSchema = new mongoose.Schema({
     type: Number,
     required:true,
   },
+  grandtotal: {
+    type: Number,
+    required:true,
+  },
+  couponprice:{
+    type:Number
+  },
   orderDate: {
     type: Date, 
     default: Date.now, 
@@ -19,12 +26,7 @@ const orderSchema = new mongoose.Schema({
   razorpayid:{
     type:Object
   },
-  status: {
-    type: String,
-    required:true,
-    enum:["Placed","Shipped","Cancelled","Pending"],
-    default:"Pending"
-  },
+
   address: 
     {
       firstname: {
@@ -77,6 +79,21 @@ const orderSchema = new mongoose.Schema({
           type: Number,
           required: true,
         },
+        status:{
+          type:String,
+          required:true,
+          enum:["Placed","Shipped","Cancelled","Pending","Returned","Delivered"],
+          default:"Pending"
+        },
+        discountprice:{
+          type:Number
+        },
+        finalprice: {
+          type: Number,
+          required: true,
+        },
+        
+        
       },
     ],
   

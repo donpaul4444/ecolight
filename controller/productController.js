@@ -5,8 +5,13 @@ const path = require("path");
 const ITEMS_PER_PAGE = 6;
 module.exports = {
   getProducts: async (req, res) => {
-    const products = await product.find({});
-    res.render("admin/products", { products });
+    const page = req.query.page || 1;
+    const productscount = await product.countDocuments({});
+    const totalpages = Math.ceil(productscount / ITEMS_PER_PAGE);
+
+    const products = await product.find({}).skip(ITEMS_PER_PAGE * (page - 1))
+    .limit(ITEMS_PER_PAGE);
+    res.render("admin/products", { products ,totalpages, page});
   },
   addProduct: async (req, res) => {
     const category = await cat.find({});
@@ -139,7 +144,7 @@ if (sort === 'lowhigh') {
 } else if (sort === 'highlow') {
     sortOptions.price = -1; 
 }
-
+      const productsfull=await product.find({})
       const products = await product
         .find(filter)
         .sort(sortOptions) 
@@ -151,9 +156,48 @@ if (sort === 'lowhigh') {
         products,
         page,
         totalpages,
+        productsfull,
       });
     } catch (error) {
       next(error);
+    }
+  },
+  getWishlistAdd: async(req,res,next)=>{
+    try {
+      const id= req.query.id
+      const data=await product.findByIdAndUpdate(id,{wishlist:"list"}, { new: true })
+      res.redirect(`/productlist/productdetail?id=${data._id}`)
+    } catch (error) {
+      next(error)
+    }
+  
+  },
+  getWishlistRemove: async(req,res,next)=>{
+    try {
+      const id= req.query.id
+      const data=await product.findByIdAndUpdate(id,{wishlist:"unlist"}, { new: true })
+      res.redirect(`/productlist/productdetail?id=${data._id}`)
+    } catch (error) {
+      next(error)
+    }
+  },
+  getWishlistDelete: async(req,res,next)=>{
+    try {
+      const id= req.query.id
+      await product.findByIdAndUpdate(id,{wishlist:"unlist"}, { new: true })
+      res.redirect("/wishlist")
+    } catch (error) {
+      next(error)
+    }
+  },
+  getWishlist: async(req,res,next)=>{
+    let user = req.session.user;
+      try {
+      const products=await product.find({wishlist:"list"})
+
+      res.render("user/wishlist",{products,user})
+    } catch (error) {
+      next(error)
     }
   },
 };

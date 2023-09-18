@@ -254,15 +254,17 @@ module.exports = {
   getCancelOrder: async (req, res, next) => {
     const orderid = req.query.orderid;
     const itemid = req.query.itemid;
+    const reason=req.query.reason;
     try {
-      const updatedOrder = await order.findOneAndUpdate(
+      await order.findOneAndUpdate(
         {
           _id: orderid,
           "items._id": itemid,
         },
         {
           $set: {
-            "items.$.status": "Cancelled",
+            "items.$.status":"Cancelled",
+            "items.$.cancel": reason,
           },
         },
         { new: true }

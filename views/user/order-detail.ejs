@@ -11,28 +11,66 @@
 <body>
 
     <%- include('../partials/uheader',{title:"" }) %>
-                <!-- Modal -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">ALERT</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">ALERT</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <span>Reason for Return?</span><br>
+                            <label><input type="radio" name="return" value="Received wrong item"> Received wrong item</label><br>
+                            <label><input type="radio" name="return" value="Product is missing in the package"> Product is missing in the package
+                            </label><br>
+                            <label><input type="radio" name="return" value="The product received is defective"> The product received is defective </label><br>
+                            <label><input type="radio" name="return" value="Others"> Others </label><br>
                         </div>
-                        <div class="modal-body">
-                            <span id="spanalert">Are you sure you want to return this item and process the refund?</span>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" id="deletebutton" class="btn btn-primary"
-                                onclick="modalok()">Ok</button>
-                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <span>Are you sure you want to Return this order?</span><br>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" id="deletebutton" class="btn btn-primary" onclick="modalok()">Ok</button>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Modal 2-->
+        <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">ALERT</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <span>Reason for cancellation?</span><br>
+                            <label><input type="radio" name="reason" value="I have changed my mind"> I have changed my mind</label><br>
+                            <label><input type="radio" name="reason" value="Expected delivery time is very long"> Expected delivery time is very long
+                            </label><br>
+                            <label><input type="radio" name="reason" value="I have purchased the product"> I have purchased the product
+                                elsewhere </label><br>
+                            <label><input type="radio" name="reason" value="Others"> Others </label><br>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <span>Are you sure you want to cancel this order?</span><br>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" id="deletebutton" class="btn btn-primary" onclick="modalok2()">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
         <div class="container" style="min-height: 500px;">
@@ -93,7 +131,10 @@
                                                     <%= item.quantity %>
                                                 </span></p>
                                             <p style="margin:2px 0; font-size: 14px; font-weight: bold;">
-                                                <span>Status:</span><span id="status"><%= item.status %></span></p>
+                                                <span>Status:</span><span id="status" data-value="<%= item.status %>">
+                                                    <%= item.status %>
+                                                </span>
+                                            </p>
                                         </div>
                                     </div>
                                     <div style="margin-right: 15px; ">
@@ -113,59 +154,59 @@
                                 </div>
                                 <div style="margin-left: 640px;">
                                     <div id="cancelOrderDiv">
-                                        <button class="btn btn-danger"
+                                        <button class="btn btn-danger" data-toggle="modal"
                                             onclick='cancel("<%= order._id %>","<%= item._id %>")'>Cancel
                                             Order</button>
                                     </div>
                                     <div id="returnDiv" style="display:none">
-                                       <button class="btn btn-success" data-toggle="modal" onclick='confirmreturn("<%= order._id %>","<%= item._id %>")'>Return
+                                        <button class="btn btn-success" data-toggle="modal"
+                                            onclick='confirmreturn("<%= order._id %>","<%= item._id %>")'>Return
                                             Product</button>
                                     </div>
                                 </div>
                             </div>
                             <% } %>
                                 <% }); %>
-                                
-                                <% if (order.items.length>1) { %>
-                                    <div style=" margin-bottom: 20px;">
-                                        <div>
-                                            <p><span style="font-weight: bold; font-size: 15px;">Other Items In This
-                                                    Order</span></p>
-                                        </div>
-                                        <% } %>
-                                        <% order.items.forEach(item=> { %>
-                                            <% if (item._id!=itemid) { %>
-                                                <div class="d-flex align-items-center justify-content-between"
-                                                    style="margin-top:10px ; padding-bottom:10px ;">
-                                                    <div class="d-flex" style="gap: 20px;">
-                                                        <div style="margin-left: 15px;"> <img
-                                                                src="/uploads/<%= item.productId.images[0] %>"
-                                                                width="125" height="150" alt="Item"></div>
-                                                        <div>
-                                                            <p style="margin:2px 0; font-size: 16px;"><span>
-                                                                    <%= item.productId.brand %>
-                                                                </span></p>
-                                                            <p style="margin:2px 0; font-size: 12px;"><span>
-                                                                    <%= item.productId.name %>
-                                                                </span></p>
-                                                            <p style="margin:2px 0; font-size: 12px;"><span>₹<%=
-                                                                        item.productId.price %>
-                                                                </span></p>
-                                                            <p style="margin:2px 0; font-size: 12px;"><span> Qnty: <%=
-                                                                        item.quantity %>
-                                                                </span></p>
-                                                        </div>
-                                                    </div>
-                                                    <div style="margin-right: 15px;">
-                                                        <p style="margin:2px 0; font-size: 12px;"><span>Status: <%=
-                                                                    item.status %>
-                                                            </span></p>
-                                                    </div>
-                                                </div>
-                                                <% } %>
-                                                    <% }); %>
 
-                                    </div>
+                                    <% if (order.items.length>1) { %>
+                                        <div style=" margin-bottom: 20px;">
+                                            <div>
+                                                <p><span style="font-weight: bold; font-size: 15px;">Other Items In This
+                                                        Order</span></p>
+                                            </div>
+                                            <% } %>
+                                                <% order.items.forEach(item=> { %>
+                                                    <% if (item._id!=itemid) { %>
+                                                        <div class="d-flex align-items-center justify-content-between"
+                                                            style="margin-top:10px ; padding-bottom:10px ;">
+                                                            <div class="d-flex" style="gap: 20px;">
+                                                                <div style="margin-left: 15px;"> <img
+                                                                        src="/uploads/<%= item.productId.images[0] %>"
+                                                                        width="125" height="150" alt="Item"></div>
+                                                                <div>
+                                                                    <p style="margin:2px 0; font-size: 16px;"><span>
+                                                                            <%= item.productId.brand %>
+                                                                        </span></p>
+                                                                    <p style="margin:2px 0; font-size: 12px;"><span>
+                                                                            <%= item.productId.name %>
+                                                                        </span></p>
+                                                                    <p style="margin:2px 0; font-size: 12px;"><span>₹<%=
+                                                                                item.productId.price %>
+                                                                        </span></p>
+                                                                    <p style="margin:2px 0; font-size: 12px;"><span>
+                                                                            Qnty: <%= item.quantity %>
+                                                                        </span></p>
+                                                                </div>
+                                                            </div>
+                                                            <div style="margin-right: 15px;">
+                                                                <p style="margin:2px 0; font-size: 12px;"><span>Status:
+                                                                        <%= item.status %>
+                                                                    </span></p>
+                                                            </div>
+                                                        </div>
+                                                        <% } %>
+                                                            <% }); %>
+                                        </div>
                 </div>
 
             </div>
@@ -176,12 +217,13 @@
 
         <%- include('../partials/ufooter') %>
             <script>
-                let orderid=""
-                let itemid=""
+                let orderid = ""
+                let itemid = ""
                 document.addEventListener("DOMContentLoaded", function () {
-                    const status = document.getElementById("status").innerText;
-                    console.log(status);
-                    if (status == "Cancelled" || status == "Delivered"|| status == "Returned") {
+                    const statuselement = document.getElementById("status")
+                    const status = statuselement.dataset.value;
+
+                    if (status == "Cancelled" || status == "Delivered" || status == "Returned") {
                         const cancelOrderDiv = document.getElementById("cancelOrderDiv");
                         cancelOrderDiv.style.display = "none";
                     }
@@ -194,34 +236,67 @@
 
 
 
-                function cancel(orderid, itemid) {
+                function cancel(order, item) {
+                    $('#exampleModal2').modal('show')
+                    orderid = order
+                    itemid = item
 
-                    fetch(`/cancelorder?orderid=${orderid}&itemid=${itemid}`, {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                window.location.href = `/user/orderlist?orderid=${orderid}&itemid=${itemid}`
-                            }
-                        })
-                        .catch(error => {
-                            console.error("Error:", error)
-                        })
                 }
 
-                function confirmreturn(order,item){
-                     orderid=order
-                     itemid=item
+
+                function confirmreturn(order, item) {
+                    orderid = order
+                    itemid = item
                     $('#exampleModal').modal('show')
                 }
 
-                function modalok(){
-                    const redirectUrl = `/addwallet?orderid=${orderid}&itemid=${itemid}`;
-                    window.location.href = redirectUrl;
+                function modalok() {
+                    const selectedReason = document.querySelector('input[name="return"]:checked');
+                    if (selectedReason) {
+                       const reason=selectedReason.value
+                    const redirectUrl = `/addwallet?orderid=${orderid}&itemid=${itemid}&reason=${reason}`;
+                    window.location.href = redirectUrl;}else{
+                        Toastify({
+                            text: "please choose a Reason",
+                            gravity: "bottom",
+                            position: "center",
+                            style: {
+                                background: "#f00",
+                            }
+                        }).showToast();
+                    }
+                }
+                function modalok2() {
+                    const selectedReason = document.querySelector('input[name="reason"]:checked')
+                    if (selectedReason) {
+                       const reason=selectedReason.value
+                    
+                        fetch(`/cancelorder?orderid=${orderid}&itemid=${itemid}&reason=${reason}`, {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    window.location.href = `/user/orderlist?orderid=${orderid}&itemid=${itemid}`
+                                }
+                            })
+                            .catch(error => {
+                                console.error("Error:", error)
+                            })
+                    }
+                    else {
+                        Toastify({
+                            text: "please choose a Reason",
+                            gravity: "bottom",
+                            position: "center",
+                            style: {
+                                background: "#f00",
+                            }
+                        }).showToast();
+                    }
                 }
             </script>
 </body>

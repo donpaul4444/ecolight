@@ -25,6 +25,7 @@ module.exports={
         const user= req.session.user
         const orderid=req.query.orderid
         const itemid= req.query.itemid
+        const reason=req.query.reason
         const items=[]
         const orderItem= await order.findOne({_id:orderid})
         const finalprice = orderItem.items.find((item) => item._id.toString() === itemid).finalprice;
@@ -35,7 +36,8 @@ module.exports={
             },
             {
               $set: {
-                "items.$.status": "Returned" 
+                "items.$.status": "Returned",
+                "items.$.return": reason
               }
             },
             { new: true }

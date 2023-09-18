@@ -92,6 +92,14 @@ const orderSchema = new mongoose.Schema({
           type: Number,
           required: true,
         },
+        cancel: {
+          type: String,
+          default:"Nill",
+        },
+        return: {
+          type: String,
+          default:"Nill",
+        },
         
         
       },

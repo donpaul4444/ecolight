@@ -129,7 +129,7 @@ module.exports = {
       let filter = { status: "List" };
 
       if (partialName) {
-        const nameRejex = new RegExp(`^${partialName}`, "i");
+        const nameRejex = new RegExp(`.*${partialName}.*`, "i");
         filter.name = nameRejex;
       }
       if (category)  filter.category = category;

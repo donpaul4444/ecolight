@@ -10,6 +10,57 @@
 
 <body>
 	<%- include('../partials/uheader',{title:""}) %>
+		<!-- Modal -->
+		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">COUPONS..</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div>
+
+							<% coupons.forEach((coupon,index)=> { %>
+
+								<div
+									style="background-color: rgb(235, 235, 235);  padding: 10px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-bottom: 20px;">
+									<input type="checkbox" name="couponSelection" value="<%= coupon._id %>"
+										data-name="<%= coupon.name %>" data-minamount="<%= coupon.minamount %>"
+										data-percentage="<%= coupon.percentage %>"
+										data-maxamount="<%= coupon.maxamount %>" onclick="handleCheckboxClick(this)">
+									<p style="margin:2px 0 "><span><strong>
+												<%= coupon.name %>
+											</strong>
+										</span> </p>
+									<p style="margin:2px 0"><span>
+											<%= coupon.percentage %> % off on minimum pruchase of ₹<%= coupon.minamount
+													%>
+										</span></p>
+									<p style="margin:2px 0"><span>
+											save upto ₹<%= coupon.maxamount %>
+										</span></p>
+									<p style="margin:2px 0"><span class="text-danger spanalert">
+
+										</span></p>
+								</div>
+
+								<% }); %>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="button" id="deletebutton" class="btn btn-primary"
+							onclick="modalok()">Apply</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
 		<div class="breadcrumbs">
 			<div class="container">
 				<div class="row">
@@ -110,65 +161,39 @@
 
 					</div>
 				</div>
-				<div>
-					<h3>Coupons</h3>
-				</div>
+
+
 				<div class="row row-pb-lg">
-					<div class="col-md-12">
-						<div class="total-wrap">
-							<div class="row d-flex justify-content-between">
-								<div class="">
+					<div class="col-md-12 ">
+						<div class="total-wrap d-flex justify-content-end">
+							<div class="col-sm-4 text-center">
+								<div class="total">
+									<div class="sub">
+										<p> <span style="font-size: 16px;">Coupons</span><span> <button
+													class="btn btn-primary" style="font-size: 12px; padding: 5px 10px;"
+													data-toggle="modal" data-target=".modal">View</button></span></p>
 
-									<% coupons.forEach((coupon,index)=> { %>
-
-										<div
-											style="background-color: rgb(235, 235, 235);  padding: 10px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-bottom: 20px;">
-											<input type="checkbox" class="biobevelCheckbox couponbox " value="<%= coupon._id %>"
-												data-name="<%= coupon.name %>" data-minamount="<%= coupon.minamount %>"
-												data-percentage="<%= coupon.percentage %>"
-												data-maxamount="<%= coupon.maxamount %>" 
-												onchange="couponapplied(this)">
-											<p style="margin:2px 0 "><span><strong>
-														<%= coupon.name %>
-													</strong>
-												</span> </p>
-											<p style="margin:2px 0"><span>
-													<%= coupon.percentage %> % off on minimum pruchase of ₹<%=
-															coupon.minamount %>
-												</span></p>
-											<p style="margin:2px 0"><span>
-													save upto ₹<%= coupon.maxamount %>
-												</span></p>
-											<p style="margin:2px 0"><span class="text-danger spanalert">
-
-												</span></p>
-										</div>
-
-										<% }); %>
+									</div>
 								</div>
 
-
-								<div class="col-sm-4 text-center">
-									
-									<div class="total">
-										<div class="sub">
-											<p><span>Subtotal:</span> <span id="spansubtotal"></span></p>
-											<p><span>Coupon:</span> <span id="spancoupon2">₹0.00</span></p>
-											<p><span>Delivery:</span> <span>₹0.00</span></p>
-
-										</div>
-										<div class="grand-total">
-											<p><span><strong>Total:</strong></span> <span id="spanfinaltotal"></span>
-											</p>
-										</div>
+								<div class="total">
+									<div class="sub">
+										<p><span>Subtotal:</span> <span id="spansubtotal"></span></p>
+										<p><span>Coupon:</span> <span id="spancoupon2">₹0.00</span></p>
+										<p><span>Delivery:</span> <span>₹0.00</span></p>
 
 									</div>
-									<div class=" mb-2">
-										<strong><span id="spancoupon"></span></strong>
+									<div class="grand-total">
+										<p><span><strong>Total:</strong></span> <span id="spanfinaltotal"></span>
+										</p>
 									</div>
-									<div class="text-centre margin-top-10px mt-3">
-										<a><button class="btn btn-success" id="checkout">CHECKOUT</button></a>
-									</div>
+
+								</div>
+								<div class=" mb-2">
+									<strong><span id="spancoupon"></span></strong>
+								</div>
+								<div class="text-centre margin-top-10px mt-3">
+									<a><button class="btn btn-success" id="checkout">CHECKOUT</button></a>
 								</div>
 							</div>
 						</div>
@@ -176,135 +201,158 @@
 				</div>
 
 			</div>
-		</div>
 
 
-		<%- include('../partials/ufooter') %>
-			<script>
-				const totalElements = document.querySelectorAll('.totalprice');
-				let spansubtotal = document.getElementById("spansubtotal")
-				let spanfinaltotal = document.getElementById("spanfinaltotal")
-				let checkout = document.getElementById("checkout")
-				let spancoupon = document.getElementById("spancoupon")
-				let spancoupon2 = document.getElementById("spancoupon2")
-				let checkboxes2=document.querySelectorAll(".couponbox")
-				let couponid=""
-				let subtotal
-				let currentlyCheckedCheckbox = null;
 
-				subTotal()
-				function subTotal() {
-					subtotal = 0;
-					totalElements.forEach(element => {
-						const price = parseFloat(element.textContent);
-						if (!isNaN(price)) {
-							subtotal += price;
-						}
-					});
-					spansubtotal.innerHTML = "₹" + subtotal
-					spanfinaltotal.innerHTML = "₹" + subtotal
-				}
-
-
-				function confirmChange(id, target) {
-					let value = target.value
-					const parent = target.closest(".product-cart")
-					let totalprice = parent.querySelector(".totalprice")
-					let originalprice = parent.querySelector(".originalprice").innerText
-
-					fetch(`/cart/changequantity?id=${id}&quantity=${value}`, {
-						method: 'GET',
-						headers: {
-							'X-Requested-With': 'XMLHttpRequest'
-						},
-					})
-						.then(response => response.json())
-						.then(data => {
-							if (data.success) {
-
-								totalprice.innerText = originalprice * value
-								subTotal()
-								checkboxes2.forEach(item=>{
-									item.checked=false
-								})
-
-
-							} else {
-								console.log(data.message);
-							}
-						})
-						.catch(error => {
-						})
-					totalamount()
-				}
-
-		
-
-				function couponapplied(checkbox) {
-					const name = checkbox.getAttribute("data-name");
-					const minamount = checkbox.getAttribute("data-minamount");
-					const percentage = checkbox.getAttribute("data-percentage");
-					const maxamount = checkbox.getAttribute("data-maxamount");
-					const parentDiv = checkbox.closest("div");
-					const spanalert = parentDiv.querySelector(".spanalert");
-					let couponprice
-					couponid = checkbox.value
-		
-					if (checkbox.checked) {
-
-						if (subtotal < minamount) {
-							spanalert.innerHTML = "coupon is not applicable";
-						} else {
-							if (currentlyCheckedCheckbox !== null) {
-								currentlyCheckedCheckbox.checked = false;
-							}
-							currentlyCheckedCheckbox = checkbox;
-							spancoupon.innerHTML = name + " coupon is applied !..";
-							couponprice = (subtotal / 100) * percentage;
-							
-							if(couponprice>=maxamount){
-								couponprice=maxamount
-							}
-							spancoupon2.innerHTML = "₹" + couponprice
-							spanfinaltotal.innerHTML = "₹" + (subtotal - couponprice)
-						}
-					} else {
-						currentlyCheckedCheckbox = null;
-						spanalert.innerHTML = ""
-						totalamount()
-					}
-				}
-
-				function totalamount() {
+			<%- include('../partials/ufooter') %>
+				<script>
+					
+					const totalElements = document.querySelectorAll('.totalprice');
+					let spansubtotal = document.getElementById("spansubtotal")
+					let spanfinaltotal = document.getElementById("spanfinaltotal")
+					let checkout = document.getElementById("checkout")
+					let spancoupon = document.getElementById("spancoupon")
+					let spancoupon2 = document.getElementById("spancoupon2")
+					let couponid = ""
+					let subtotal
+                    checkbox()
 					subTotal()
-					spancoupon.innerHTML = "";
-					spancoupon2.innerHTML = "₹0.00";
-					couponid=""
-				}
-
-				checkout.addEventListener('click', function (event) {
-					if (parseFloat(spanfinaltotal.innerText.slice(1)) === 0) {
-						event.preventDefault()
-						Toastify({
-							text: "your cart is empy",
-							gravity: "bottom",
-							position: "center",
-							style: {
-								background: "#f00",
+				
+					function subTotal() {
+						subtotal = 0;
+						totalElements.forEach(element => {
+							const price = parseFloat(element.textContent);
+							if (!isNaN(price)) {
+								subtotal += price;
 							}
-						}).showToast();
-					} else {
-						let str=""
-						if (couponid) {
-						str += `couponid=${couponid}`;
+						});
+						spansubtotal.innerHTML = "₹" + subtotal
+						spanfinaltotal.innerHTML = "₹" + subtotal
 					}
-						window.location.href = "/checkout?"+str;
+
+					function modalok() {
+
+						const selectedCoupon = document.querySelector('input[type="checkbox"]:checked');
+						if (selectedCoupon) {
+						    couponid = selectedCoupon.value;
+							const couponName = selectedCoupon.getAttribute("data-name");
+							const couponMinAmount = selectedCoupon.getAttribute("data-minamount");
+							const couponPercentage = selectedCoupon.getAttribute("data-percentage");
+							const couponMaxAmount = selectedCoupon.getAttribute("data-maxamount");
+							let couponprice
+
+
+							if (subtotal < couponMinAmount) {
+								Toastify({
+									text: "Coupon is not applicable...!",
+									gravity: "bottom",
+									position: "center",
+									style: {
+										background: "#f00",
+									}
+								}).showToast();
+							} else {
+								spancoupon.innerHTML = couponName + " coupon is applied !..";
+								couponprice = (subtotal / 100) * couponPercentage;
+								if (couponprice >= couponMaxAmount) {
+									couponprice = couponMaxAmount
+								}
+								spancoupon2.innerHTML = "₹" + couponprice
+								spanfinaltotal.innerHTML = "₹" + (subtotal - couponprice)
+								$('#exampleModal').modal('hide');
+							}
+						} else {
+							totalamount()
+							$('#exampleModal').modal('hide');
+						}
 					}
-				})
+
+
+					function confirmChange(id, target) {
+						let value = target.value
+						const parent = target.closest(".product-cart")
+						let totalprice = parent.querySelector(".totalprice")
+						let originalprice = parent.querySelector(".originalprice").innerText
+
+						fetch(`/cart/changequantity?id=${id}&quantity=${value}`, {
+							method: 'GET',
+							headers: {
+								'X-Requested-With': 'XMLHttpRequest'
+							},
+						})
+							.then(response => response.json())
+							.then(data => {
+								if (data.success) {
+
+									totalprice.innerText = originalprice * value
+									subTotal()
+									checkboxes2.forEach(item => {
+										item.checked = false
+									})
+
+
+								} else {
+									console.log(data.message);
+								}
+							})
+							.catch(error => {
+							})
+						totalamount()
+						checkbox()
+					
+					}
+
+					function totalamount() {
+						subTotal()
+						spancoupon.innerHTML = "";
+						spancoupon2.innerHTML = "₹0.00";
+						couponid = ""
+					}
+
+					checkout.addEventListener('click', function (event) {
+						if (parseFloat(spanfinaltotal.innerText.slice(1)) === 0) {
+							event.preventDefault()
+							Toastify({
+								text: "your cart is empy",
+								gravity: "bottom",
+								position: "center",
+								style: {
+									background: "#f00",
+								}
+							}).showToast();
+						} else {
+							let str = ""
+							if (couponid) {
+								str += `couponid=${couponid}`;
+							}
+							window.location.href = "/checkout?" + str;
+						}
+					})
+
+					function handleCheckboxClick(checkbox) {
+						const checkboxes = document.getElementsByName("couponSelection");
+						checkboxes.forEach(cb => {
+							if (cb !== checkbox) {
+								cb.checked = false;
+							}
+						});
+					}
+
+					function checkbox(){
+						const checkboxes = document.getElementsByName("couponSelection");
+						checkboxes.forEach(cb => {
+							
+								cb.checked = false;
+							
+						});
+					}
 
 
 
-			</script>
+
+
+
+				</script>
 </body>
 
 </html>

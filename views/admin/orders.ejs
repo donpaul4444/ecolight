@@ -63,17 +63,25 @@
                                         <td style="width: 15%;">
                                            
                                             <select id="statusDropdown" onchange="updateOrderStatus(this,'<%= order._id %>','<%= item._id %>')">
-                                                <% if (item.status !== "Cancelled" && item.status !== "Delivered") { %>
-                                                <option value="Placed" <%=item.status==='Placed' ? 'selected' : '' %>
-                                                    >Placed</option>
-                                                <option value="Shipped" <%=item.status==='Shipped' ? 'selected' : '' %>
-                                                    >Shipped</option>
-                                                <option value="Cancelled" <%=item.status==='Cancelled' ? 'selected'
-                                                    : '' %>>Cancelled</option>
-                                                    <option value="Delivered" <%=item.status==='Delivered' ? 'selected'
-                                                    : '' %>>Delivered</option>
-                                                    <% } else { %>
-                                                        <option value="<%= item.status %>" selected><%= item.status %></option>
+                                                <% if (item.status == "Cancelled" || item.status == "Delivered" || item.status == "Returned") { %>
+                                                    <option value="<%= item.status %>" selected><%= item.status %></option>
+                                                    <% } else if(item.status == "Shipped") { %>   
+                                                        <option value="Shipped" <%=item.status==='Shipped' ? 'selected' : '' %>
+                                                            >Shipped</option>
+                                                        <option value="Cancelled" <%=item.status==='Cancelled' ? 'selected'
+                                                            : '' %>>Cancel</option>
+                                                            <option value="Delivered" <%=item.status==='Delivered' ? 'selected'
+                                                            : '' %>>Deliver</option>
+                                                        
+                                                        <% } else { %>
+                                                        <option value="Placed" <%=item.status==='Placed' ? 'selected' : '' %>
+                                                            >Placed</option>
+                                                        <option value="Shipped" <%=item.status==='Shipped' ? 'selected' : '' %>
+                                                            >Ship</option>
+                                                        <option value="Cancelled" <%=item.status==='Cancelled' ? 'selected'
+                                                            : '' %>>Cancel</option>
+                                                            <option value="Delivered" <%=item.status==='Delivered' ? 'selected'
+                                                            : '' %>>Deliver</option>
                                                         <% } %>
                                          
                                             </select>

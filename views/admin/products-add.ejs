@@ -111,7 +111,7 @@
                                             <select class="form-select" name="category">
                                                 <option value="" selected>Choose a category</option>
                                                 <% category.forEach(cat=> { %>
-                                                    <option value="<%= cat.catname %>">
+                                                    <option value="<%= cat._id %>">
                                                         <%= cat.catname %>
                                                     </option>
                                                     <% }); %>

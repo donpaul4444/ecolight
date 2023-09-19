@@ -145,9 +145,9 @@
                                     </div>
                                     <div class="col-md-9">
                                         <div class="mb-4">
-                                            <select class="form-select" name="category" value="<%= data.category %>">
+                                            <select class="form-select" name="category" value="<%= data.category.catname %>">
                                                 <% category.forEach(cat=> { %>
-                                                    <option value="<%= cat.catname %>" <%=cat.catname===data.category
+                                                    <option value="<%= cat._id %>" <%=cat.catname===data.category.catname
                                                         ? 'selected' : '' %>>
                                                         <%= cat.catname %>
                                                     </option>

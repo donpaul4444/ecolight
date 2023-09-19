@@ -9,9 +9,11 @@ module.exports = {
     const productscount = await product.countDocuments({});
     const totalpages = Math.ceil(productscount / ITEMS_PER_PAGE);
 
-    const products = await product.find({}).skip(ITEMS_PER_PAGE * (page - 1))
-    .limit(ITEMS_PER_PAGE);
-    res.render("admin/products", { products ,totalpages, page});
+    const products = await product
+      .find({})
+      .skip(ITEMS_PER_PAGE * (page - 1))
+      .limit(ITEMS_PER_PAGE);
+    res.render("admin/products", { products, totalpages, page });
   },
   addProduct: async (req, res) => {
     const category = await cat.find({});
@@ -56,7 +58,7 @@ module.exports = {
   getEditProduct: async (req, res) => {
     let id = req.query.id;
     try {
-      const data = await product.findById(id);
+      const data = await product.findById(id).populate("category");
       const category = await cat.find({});
       res.render("admin/products-edit", { data, category });
     } catch (err) {
@@ -92,7 +94,7 @@ module.exports = {
   getProductDetail: async (req, res) => {
     const id = req.query.id;
     let categories = await cat.find({ status: "List" });
-    const item = await product.findById(id);
+    const item = await product.findById(id).populate("category");
     res.render("user/productdetail", { item, categories: categories });
   },
   deleteImage: async (req, res, next) => {
@@ -122,36 +124,82 @@ module.exports = {
       const page = req.query.page || 1;
       const partialName = req.query.search;
       const category = req.query.category;
-      const brand= req.query.brand
-      const colour=req.query.colour
-      const sort=req.query.sort
+      const brand = req.query.brand;
+      const colour = req.query.colour;
+      const sort = req.query.sort;
 
-      let filter = { status: "List" };
+      let filter = { status: "List", "category.status": "List"};
 
       if (partialName) {
         const nameRejex = new RegExp(`.*${partialName}.*`, "i");
         filter.name = nameRejex;
       }
-      if (category)  filter.category = category;
-      if(brand) filter.brand=brand
-      if(colour)filter.colour=colour
-
+      if (category) {
+        filter["category.catname"] = category; 
+      }
+      if (brand) filter.brand = brand;
+      if (colour) filter.colour = colour;
 
       const sortOptions = {};
 
-if (sort === 'lowhigh') {
-    sortOptions.price = 1;
-} else if (sort === 'highlow') {
-    sortOptions.price = -1; 
-}
-      const productsfull=await product.find({})
-      const products = await product
-        .find(filter)
-        .sort(sortOptions) 
-        .skip(ITEMS_PER_PAGE * (page - 1))
-        .limit(ITEMS_PER_PAGE);
-      const productscount = await product.countDocuments(filter);
-      const totalpages = Math.ceil(productscount / ITEMS_PER_PAGE);
+      if (sort === "lowhigh") {
+        sortOptions.price = 1;
+      } else if (sort === `highlow`) {
+        sortOptions.price = -1;
+      } else {
+        sortOptions.name = 1;
+      }
+
+      const productsfull = await product.aggregate([
+        {
+          $lookup: {
+            from: "categories",
+            localField: "category",
+            foreignField: "_id",
+            as: "category",
+          },
+        },
+        {$unwind:"$category"},
+
+        {$match: filter},
+      ])
+
+
+
+      let products = await product.aggregate([
+        {
+          $lookup: {
+            from: "categories",
+            localField: "category",
+            foreignField: "_id",
+            as: "category",
+          },
+        },
+
+        {$match: filter},
+        {$sort: sortOptions},
+        {$skip:ITEMS_PER_PAGE * (page - 1)},
+        {$limit:ITEMS_PER_PAGE},
+      ]);
+
+      const productscount = await product.aggregate([
+        {
+          $lookup: {
+            from: "categories",
+            localField: "category",
+            foreignField: "_id",
+            as: "category",
+          },
+        },
+
+        {$match: filter},
+        {$group:{_id:null,count:{$sum:1}}}
+      ])
+
+
+
+      const totalpages = Math.ceil(productscount[0].count / ITEMS_PER_PAGE);
+     
       res.render("user/productlist", {
         products,
         page,
@@ -162,42 +210,53 @@ if (sort === 'lowhigh') {
       next(error);
     }
   },
-  getWishlistAdd: async(req,res,next)=>{
+  getWishlistAdd: async (req, res, next) => {
     try {
-      const id= req.query.id
-      const data=await product.findByIdAndUpdate(id,{wishlist:"list"}, { new: true })
-      res.redirect(`/productlist/productdetail?id=${data._id}`)
+      const id = req.query.id;
+      const data = await product.findByIdAndUpdate(
+        id,
+        { wishlist: "list" },
+        { new: true }
+      );
+      res.redirect(`/productlist/productdetail?id=${data._id}`);
     } catch (error) {
-      next(error)
-    }
-  
-  },
-  getWishlistRemove: async(req,res,next)=>{
-    try {
-      const id= req.query.id
-      const data=await product.findByIdAndUpdate(id,{wishlist:"unlist"}, { new: true })
-      res.redirect(`/productlist/productdetail?id=${data._id}`)
-    } catch (error) {
-      next(error)
+      next(error);
     }
   },
-  getWishlistDelete: async(req,res,next)=>{
+  getWishlistRemove: async (req, res, next) => {
     try {
-      const id= req.query.id
-      await product.findByIdAndUpdate(id,{wishlist:"unlist"}, { new: true })
-      res.redirect("/wishlist")
+      const id = req.query.id;
+      const data = await product.findByIdAndUpdate(
+        id,
+        { wishlist: "unlist" },
+        { new: true }
+      );
+      res.redirect(`/productlist/productdetail?id=${data._id}`);
     } catch (error) {
-      next(error)
+      next(error);
     }
   },
-  getWishlist: async(req,res,next)=>{
+  getWishlistDelete: async (req, res, next) => {
+    try {
+      const id = req.query.id;
+      await product.findByIdAndUpdate(
+        id,
+        { wishlist: "unlist" },
+        { new: true }
+      );
+      res.redirect("/wishlist");
+    } catch (error) {
+      next(error);
+    }
+  },
+  getWishlist: async (req, res, next) => {
     let user = req.session.user;
-      try {
-      const products=await product.find({wishlist:"list"})
+    try {
+      const products = await product.find({ wishlist: "list" });
 
-      res.render("user/wishlist",{products,user})
+      res.render("user/wishlist", { products, user });
     } catch (error) {
-      next(error)
+      next(error);
     }
   },
 };

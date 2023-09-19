@@ -1,4 +1,6 @@
 const users = require("../model/users");
+const banner=require("../model/banner")
+const product = require("../model/products");
 const cat = require("../model/category");
 const Cart = require("../model/cart");
 const coupon=require("../model/coupons")
@@ -12,7 +14,34 @@ const ITEMS_PER_PAGE = 6;
 module.exports = {
   getHome: async (req, res) => {
     let categories = await cat.find({status:"List"});
-    res.render("user/home", {categories});
+    let banners= await banner.find({})
+    let newproducts = await product.aggregate([
+      {
+        $lookup: {
+          from: "categories",
+          localField: "category",
+          foreignField: "_id",
+          as: "category",
+        },
+      },
+      {
+        $match: {
+          status: "List",
+          "category.status": "List",
+        },
+      },
+      {
+        $sort: {
+          orderDate: -1,
+        },
+      },
+      {
+        $limit: 8,
+      },
+    ]);
+    
+
+    res.render("user/home", {categories,newproducts,banners});
   },
   getLogin: (req, res) => {
     if(req.session.user){

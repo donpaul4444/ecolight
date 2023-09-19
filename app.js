@@ -9,6 +9,7 @@ const session = require('express-session')
 const db=require("./config/db")
 const errorHandler=require("./middleware/errorhandler")
 
+
 const userRouter=require("./routes/userRouter")
 const adminRouter=require("./routes/adminRouter")
 db.connect()
@@ -38,4 +39,5 @@ app.use(errorHandler)
 
 app.listen(3000,()=>{
     console.log("server connected");
+
 })

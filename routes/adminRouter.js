@@ -6,6 +6,7 @@ const productController=require("../controller/productController")
 const userController=require("../controller/userController")
 const orderController=require("../controller/orderController")
 const couponController=require("../controller/couponsController")
+const bannerController=require("../controller/bannerController")
 const session=require("../middleware/auth")
 const passing=require("../middleware/cache")
 
@@ -16,6 +17,13 @@ router.post("/admin/catpost",upload.single('image'),passing.cache,session.authad
 router.get("/admin/cat/list",passing.cache,session.authadmin,categoryController.listCategory)
 router.get("/admin/category/editcat",passing.cache,session.authadmin,categoryController.getEditCategory)
 router.post("/admin/cat/edit",passing.cache,session.authadmin,upload.single('image'),categoryController.postEditCategory)
+
+router.get("/admin/banner",passing.cache,session.authadmin,bannerController.getBanner)
+router.get("/admin/banner/add",passing.cache,session.authadmin,bannerController.getAddBanner)
+router.post("/admin/bannerpost",upload.single('image'),passing.cache,session.authadmin,bannerController.postAddBanner)
+router.get("/admin/banner/list",passing.cache,session.authadmin,bannerController.listBanner)
+router.get("/admin/banner/editbanner",passing.cache,session.authadmin,bannerController.getEditBanner)
+router.post("/admin/banner/edit",passing.cache,session.authadmin,upload.single('image'),bannerController.postEditBanner)
 
 router.get("/admin/coupons",passing.cache,session.authadmin,couponController.getCoupons)
 router.get("/admin/coupons/add",passing.cache,session.authadmin,couponController.getAddCoupons)

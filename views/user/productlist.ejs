@@ -9,7 +9,7 @@
 </head>
 
 <body>
-	<%- include('../partials/uheader') %>
+	<%- include('../partials/uheader',{title:"All"}) %>
 
 		<div class="container">
 			<div class="col d-flex justify-content-end mt-2 align-items-center">
@@ -35,11 +35,11 @@
 							<div class="col-sm-12">
 								<div class="side border mb-1">
 									<h3>Category</h3>
-									<ul <% const uniqueCategory=[...new Set(productsfull.map(prod=> prod.category))]
+									<ul <% const uniqueCategory=[...new Set(productsfull.map(prod=> prod.category.catname))]
 										uniqueCategory.forEach(category=> { %>
 										<li><input type="checkbox" id="biobevelCheckbox" value="<%= category %>"
 												class="category" onclick="commonfunction()">
-											<%= category%>
+											<%= category %>
 										</li>
 										</option>
 										<% }); %>
@@ -81,21 +81,6 @@
 							<div class="col-sm-12 text-right">
 								<button class="btn btn-primary" onclick="resetfunction()">Reset</button>
 							</div>
-
-							<!-- <div class="col-sm-12">
-								<div class="side border mb-1">
-									<h3>Price range</h3>
-									<ul>
-										<li><input type="checkbox" id="biobevelCheckbox"><a href="#"> ₹0 - ₹500</a></li>
-										<li><input type="checkbox" id="biobevelCheckbox"><a href="#"> ₹500 - ₹1500</a>
-										</li>
-										<li><input type="checkbox" id="biobevelCheckbox"><a href="#"> ₹1500 - ₹3000</a>
-										</li>
-										<li><input type="checkbox" id="biobevelCheckbox"><a href="#"> ₹3000 - above</a>
-										</li>
-									</ul>
-								</div>
-							</div> -->
 						</div>
 					</div>
 

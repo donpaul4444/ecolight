@@ -19,7 +19,10 @@ const productSchema = new mongoose.Schema({
     required: true,
     default: 'unlist',
   },
-
+  orderDate: {
+    type: Date, 
+    default: Date.now, 
+  },
   colour: {
     type: String,
     enum:["White","Warm","Red","Green","Blue"],
@@ -35,8 +38,8 @@ const productSchema = new mongoose.Schema({
     required: true,
   },
   category: {
-    type: String,
-    required: true,
+    type: mongoose.Schema.ObjectId,
+    ref: "category",
   },
   quantity: {
     type: Number,

@@ -59,7 +59,6 @@ module.exports = {
   },
 
   postEditCategory: async (req,res,next) => {
-   
     try {
       const data=JSON.parse(req.body.productData);
       const category = await cat.findById(data.id);

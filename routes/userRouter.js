@@ -32,6 +32,7 @@ router.get("/user/orderlist",passing.cache,session.authuser,orderController.getO
 router.post("/razorpay",passing.cache,session.authuser,orderController.postRazorpay)
 router.get("/ordercomplete/page",passing.cache,session.authuser,orderController.getOrderCompletePage)
 router.get("/cancelorder",passing.cache,session.authuser,orderController.getCancelOrder)
+router.get("/invoice",passing.cache,session.authuser,orderController.getInvoice)
 
 
 router.get("/product",passing.cache,productController. getProductListNew)

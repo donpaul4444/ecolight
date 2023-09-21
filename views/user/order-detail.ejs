@@ -25,10 +25,13 @@
                     <div class="modal-body">
                         <div>
                             <span>Reason for Return?</span><br>
-                            <label><input type="radio" name="return" value="Received wrong item"> Received wrong item</label><br>
-                            <label><input type="radio" name="return" value="Product is missing in the package"> Product is missing in the package
+                            <label><input type="radio" name="return" value="Received wrong item"> Received wrong
+                                item</label><br>
+                            <label><input type="radio" name="return" value="Product is missing in the package"> Product
+                                is missing in the package
                             </label><br>
-                            <label><input type="radio" name="return" value="The product received is defective"> The product received is defective </label><br>
+                            <label><input type="radio" name="return" value="The product received is defective"> The
+                                product received is defective </label><br>
                             <label><input type="radio" name="return" value="Others"> Others </label><br>
                         </div>
                     </div>
@@ -55,10 +58,13 @@
                     <div class="modal-body">
                         <div>
                             <span>Reason for cancellation?</span><br>
-                            <label><input type="radio" name="reason" value="I have changed my mind"> I have changed my mind</label><br>
-                            <label><input type="radio" name="reason" value="Expected delivery time is very long"> Expected delivery time is very long
+                            <label><input type="radio" name="reason" value="I have changed my mind"> I have changed my
+                                mind</label><br>
+                            <label><input type="radio" name="reason" value="Expected delivery time is very long">
+                                Expected delivery time is very long
                             </label><br>
-                            <label><input type="radio" name="reason" value="I have purchased the product"> I have purchased the product
+                            <label><input type="radio" name="reason" value="I have purchased the product"> I have
+                                purchased the product
                                 elsewhere </label><br>
                             <label><input type="radio" name="reason" value="Others"> Others </label><br>
                         </div>
@@ -159,9 +165,12 @@
                                             Order</button>
                                     </div>
                                     <div id="returnDiv" style="display:none">
-                                        <button class="btn btn-success" data-toggle="modal"
+                                        <div class="d-flex">
+                                        <button class="btn btn-primary" data-toggle="modal"
                                             onclick='confirmreturn("<%= order._id %>","<%= item._id %>")'>Return
                                             Product</button>
+                                            <a href= "/invoice?itemid=<%= item._id %>&orderid=<%= order._id %>"><button class="btn btn-success" >Invoice</button></a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -208,10 +217,8 @@
                                                             <% }); %>
                                         </div>
                 </div>
-
             </div>
         </div>
-
         </div>
 
 
@@ -221,7 +228,7 @@
                 let itemid = ""
                 document.addEventListener("DOMContentLoaded", function () {
                     const statuselement = document.getElementById("status")
-                    const status = statuselement.dataset.value;
+                    const status = statuselement.dataset.value
 
                     if (status == "Cancelled" || status == "Delivered" || status == "Returned") {
                         const cancelOrderDiv = document.getElementById("cancelOrderDiv");
@@ -253,9 +260,10 @@
                 function modalok() {
                     const selectedReason = document.querySelector('input[name="return"]:checked');
                     if (selectedReason) {
-                       const reason=selectedReason.value
-                    const redirectUrl = `/addwallet?orderid=${orderid}&itemid=${itemid}&reason=${reason}`;
-                    window.location.href = redirectUrl;}else{
+                        const reason = selectedReason.value
+                        const redirectUrl = `/addwallet?orderid=${orderid}&itemid=${itemid}&reason=${reason}`;
+                        window.location.href = redirectUrl;
+                    } else {
                         Toastify({
                             text: "please choose a Reason",
                             gravity: "bottom",
@@ -269,8 +277,8 @@
                 function modalok2() {
                     const selectedReason = document.querySelector('input[name="reason"]:checked')
                     if (selectedReason) {
-                       const reason=selectedReason.value
-                    
+                        const reason = selectedReason.value
+
                         fetch(`/cancelorder?orderid=${orderid}&itemid=${itemid}&reason=${reason}`, {
                             method: "GET",
                             headers: {

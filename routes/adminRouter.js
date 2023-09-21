@@ -51,7 +51,8 @@ router.delete("/admin/product/deleteimage",passing.cache,session.authadmin,produ
 router.get("/admin/orders",passing.cache,session.authadmin,orderController.getAdminOrders)
 router.get("/admin/orders/orderdetail",passing.cache,session.authadmin,orderController.getAdminOrderDetail)
 router.get("/admin/updateOrderStatus",passing.cache,session.authadmin,orderController.postUpdateOrderStatus)
-
+router.get("/admin/salesreport",passing.cache,session.authadmin,orderController.getSalesReport)
+router.get("/admin/salesreport/download",passing.cache,session.authadmin,orderController.getSalesReportDownload)
 
 
 module.exports=router

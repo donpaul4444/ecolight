@@ -4,6 +4,9 @@ const Cart = require("../model/cart");
 const coupon = require("../model/coupons");
 const product = require("../model/products");
 const wallet = require("../model/wallet");
+const easyinvoice = require("easyinvoice");
+const PDFDocument = require("pdfkit");
+const fs = require("fs");
 const ITEMS_PER_PAGE = 6;
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
@@ -122,7 +125,7 @@ module.exports = {
         }
       } else if (paymentmethod == "Razorpay") {
         const orderOptions = {
-          amount: totalprice * 100,
+          amount: grandtotal * 100,
           currency: "INR",
           receipt: "order_receipt_123",
         };
@@ -197,14 +200,37 @@ module.exports = {
   getAdminOrders: async (req, res, next) => {
     try {
       const page = req.query.page || 1;
-      const orderscount = await order.countDocuments({});
-      const totalpages = Math.ceil(orderscount / ITEMS_PER_PAGE);
-      let orders = await order
-        .find({})
-        .populate("items.productId")
-        .sort({ orderDate: -1 })
-        .skip(ITEMS_PER_PAGE * (page - 1))
-        .limit(ITEMS_PER_PAGE);
+
+      const orderscount = await order.aggregate([
+        { $unwind: "$items" },
+        { $match: { "items.status": { $ne: "Pending" },} },
+        {$group:{_id:null,sum:{$sum:1}}},
+      ])
+
+
+      const totalpages = Math.ceil(orderscount[0].sum / ITEMS_PER_PAGE);
+      // let orders = await order
+      //   .find({})
+      //   .populate("items.productId")
+      //   .sort({ orderDate: -1 })
+      //   .skip(ITEMS_PER_PAGE * (page - 1))
+      //   .limit(ITEMS_PER_PAGE);
+
+          const orders = await order.aggregate([
+            { $unwind: "$items" },
+            { $match: { "items.status": { $ne: "Pending" },} },
+            {$sort: {orderDate: -1}},
+            {$skip:ITEMS_PER_PAGE * (page - 1)},
+            {$limit:ITEMS_PER_PAGE},
+            {
+              $lookup: {
+                from: "products", // The name of the other collection
+                localField: "items.productId",
+                foreignField: "_id", 
+                as: "items.productId", 
+              },
+            },
+          ])
       res.render("admin/orders", { orders, page, totalpages });
     } catch (error) {
       next(error);
@@ -254,7 +280,7 @@ module.exports = {
   getCancelOrder: async (req, res, next) => {
     const orderid = req.query.orderid;
     const itemid = req.query.itemid;
-    const reason=req.query.reason;
+    const reason = req.query.reason;
     try {
       await order.findOneAndUpdate(
         {
@@ -263,7 +289,7 @@ module.exports = {
         },
         {
           $set: {
-            "items.$.status":"Cancelled",
+            "items.$.status": "Cancelled",
             "items.$.cancel": reason,
           },
         },
@@ -274,4 +300,229 @@ module.exports = {
       next(error);
     }
   },
-};
+
+  getInvoice: async (req, res, next) => {
+    try {
+      const itemid = req.query.itemid;
+      const orderid = req.query.orderid;
+      const orders = await order.findById(orderid).populate("items.productId");
+      const items = orders.items.id(itemid);
+      const isoDateString = orders.orderDate;
+      const isoDate = new Date(isoDateString);
+      const options = { year: "numeric", month: "long", day: "numeric" };
+      const formattedDate = isoDate.toLocaleDateString("en-US", options);
+      const formattedPrice = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "INR",
+      });
+
+      var data = {
+        customize: {
+          template: fs.readFileSync("public/html/template.html", "base64"),
+        },
+        images: {
+          logo: fs.readFileSync("public/images/ecologo.png", "base64"),
+          background:
+            "https://public.easyinvoice.cloud/img/watermark-draft.jpg",
+        },
+
+        sender: {
+          company: "Eco Light",
+          address: "291 SOUTH 21TH STREET KADAVANTHARA , KOCHI",
+          zip: "680541",
+          city: "Ernamkulam",
+          country: "India",
+        },
+
+        client: {
+          company: "Customer Adress",
+          address:
+            orders.address.firstname +
+            "" +
+            orders.address.lastname +
+            "," +
+            orders.address.address,
+          zip: orders.address.pincode,
+          city: orders.address.city,
+          custom1: formattedPrice.format(items.discountprice),
+          custom2: formattedPrice.format(items.finalprice),
+        },
+        information: {
+          number: "order" + orders._id,
+          date: formattedDate,
+        },
+        products: [
+          {
+            quantity: items.quantity,
+            description: items.productId.name,
+            "tax-rate": 0,
+            price: items.price,
+            discount: 100,
+          },
+          {
+            quantity: items.quantity,
+            description: items.productId.name,
+            "tax-rate": 0,
+            price: items.price,
+            discount: 100,
+          },
+        ],
+        "bottom-notice": "Happy shoping and visit again",
+        settings: {
+          currency: "INR",
+        },
+
+        translate: {},
+      };
+
+      easyinvoice.createInvoice(data, (result) => {
+        const fileName = "invoice.pdf";
+        const base64String = result.pdf;
+
+        res.setHeader(
+          "Content-Disposition",
+          `attachment; filename=${fileName}`
+        );
+        res.setHeader("Content-Type", "application/pdf");
+        res.send(Buffer.from(base64String, "base64"));
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  getSalesReport: async (req, res, next) => {
+    try {
+      const orders = await order.aggregate([
+        { $unwind: "$items" },
+        { $unwind: "$user" },
+        { $match: { "items.status": "Delivered" } },
+      ]);
+      res.render("admin/sales-report",{orders});
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  getSalesReportDownload: async (req, res, next) => {
+    try {
+      const orders = await order.aggregate([
+        { $unwind: "$items" },
+        { $unwind: "$user" },
+        { $match: { "items.status": "Delivered" } },
+      ]);
+
+      // Create a new PDF document
+      const doc = new PDFDocument();
+
+      // Set response headers for PDF download
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        'attachment; filename="sales-report.pdf"'
+      );
+
+      // Pipe the PDF output to the response object
+      doc.pipe(res);
+
+      // Title
+      doc.fontSize(20).text("Sales Report", { align: "center" });
+      doc.moveDown();
+      const salesData = [];
+      let index = 1; 
+      // Sample sales data from your database (replace with your actual data retrieval logic)
+  
+      orders.forEach((order) => {
+        const quantity = order.items.quantity;
+        const total=order.items.price*order.items.quantity
+        const discount=order.items.discountprice
+        const orderId=order._id
+        const date= order.orderDate.toLocaleDateString() 
+       
+
+        salesData.push({
+          index:index++,
+          date,
+          orderId,
+          quantity,
+          total ,
+          discount,
+        });
+      });
+      // Define table headers
+      const headers = [
+        "Index",
+        "Date",
+        "Order Id",
+        "Qnty",
+        "Total",
+        "Discount",
+        "Final Price",
+      ];
+
+      // Calculate column widths
+      const colWidths = [40, 60, 180, 50, 70, 70, 70];
+
+      // Set initial position for drawing
+      let x = 50;
+      let y = doc.y;
+
+      // Draw table headers
+      headers.forEach((header, index) => {
+        doc
+          .font("Helvetica-Bold")
+          .fontSize(12)
+          .text(header, x, y, { width: colWidths[index], align: "left" });
+        x += colWidths[index];
+      });
+
+      // Draw table rows
+      let grandTotal = 0;
+      let grandDiscount = 0;
+
+      salesData.forEach((sale) => {
+        x = 50;
+        y += 20;
+
+        // Calculate final price (total - discount)
+        const finalPrice = sale.total - sale.discount;
+        grandTotal += sale.total;
+        grandDiscount += sale.discount;
+
+        // Create an array of row data with the Indian Rupee symbol and formatted prices
+        const rowData = [
+          sale.index,
+          sale.date,
+          sale.orderId,
+          sale.quantity,
+          `${sale.total.toFixed(2)}`, // Format total price
+          `${sale.discount.toFixed(2)}`, // Format discount
+          `${finalPrice.toFixed(2)}`, // Format final price
+        ];
+
+        // Draw row data
+        rowData.forEach((value, index) => {
+          doc.font("Helvetica").fontSize(12).text(value.toString(), x, y, {
+            width: colWidths[index],
+            align: "left",
+          });
+          x += colWidths[index];
+        });
+      });
+
+      // Draw grand totals
+      y += 20;
+      doc.text(`Total: ${grandTotal.toFixed(2)}`, 420, (y += 20));
+      y += 20;
+      doc.text(`Discount: ${grandDiscount.toFixed(2)}`, 420, y);
+      y += 20;
+      const grandFinalPrice = grandTotal - grandDiscount;
+      doc.text(`Grand Total: ${grandFinalPrice.toFixed(2)}`, 420, y);
+
+      // Finalize the PDF file
+      doc.end();
+    } catch (error) {
+      next(error);
+    }
+  },
+}

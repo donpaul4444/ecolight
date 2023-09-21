@@ -43,44 +43,44 @@
                             </thead>
                             <tbody>
                                 <% orders.forEach((order)=> { %>
-                                    <% order.items.forEach(item=> { %>
+                             
                                     <tr>
                                         <td style="width: 20%;">
-                                            <%= item.productId.name %> 
+                                            <%= order.items.productId[0].name %> 
                                         </td>
                                         <td style="width: 20%;">
-                                                  <%= order._id%>
+                                         <%= order._id%>
                                         </td>
                                         <td style="width: 15%;">
-                                            ₹ <%= item.finalprice %>
+                                            ₹ <%= order.items.finalprice %>
                                         </td>
                                         <td style="width: 15%;">
                                             <%= order.orderDate.toLocaleDateString() %>
                                         </td>
                                         <td style="width: 15%;">
-                                            <%= item.quantity %>
+                                            <%= order.items.quantity %>
                                         </td>
                                         <td style="width: 15%;">
                                            
-                                            <select id="statusDropdown" onchange="updateOrderStatus(this,'<%= order._id %>','<%= item._id %>')">
-                                                <% if (item.status == "Cancelled" || item.status == "Delivered" || item.status == "Returned") { %>
-                                                    <option value="<%= item.status %>" selected><%= item.status %></option>
-                                                    <% } else if(item.status == "Shipped") { %>   
-                                                        <option value="Shipped" <%=item.status==='Shipped' ? 'selected' : '' %>
+                                            <select id="statusDropdown" onchange="updateOrderStatus(this,'<%= order._id %>','<%= order.items._id %>')">
+                                                <% if (order.items.status == "Cancelled" || order.items.status == "Delivered" || order.items.status == "Returned") { %>
+                                                    <option value="<%= order.items.status %>" selected><%= order.items.status %></option>
+                                                    <% } else if(order.items.status == "Shipped") { %>   
+                                                        <option value="Shipped" <%=order.items.status==='Shipped' ? 'selected' : '' %>
                                                             >Shipped</option>
-                                                        <option value="Cancelled" <%=item.status==='Cancelled' ? 'selected'
+                                                        <option value="Cancelled" <%=order.items.status==='Cancelled' ? 'selected'
                                                             : '' %>>Cancel</option>
-                                                            <option value="Delivered" <%=item.status==='Delivered' ? 'selected'
+                                                            <option value="Delivered" <%=order.items.status==='Delivered' ? 'selected'
                                                             : '' %>>Deliver</option>
                                                         
                                                         <% } else { %>
-                                                        <option value="Placed" <%=item.status==='Placed' ? 'selected' : '' %>
+                                                        <option value="Placed" <%=order.items.status==='Placed' ? 'selected' : '' %>
                                                             >Placed</option>
-                                                        <option value="Shipped" <%=item.status==='Shipped' ? 'selected' : '' %>
+                                                        <option value="Shipped" <%=order.items.status==='Shipped' ? 'selected' : '' %>
                                                             >Ship</option>
-                                                        <option value="Cancelled" <%=item.status==='Cancelled' ? 'selected'
+                                                        <option value="Cancelled" <%=order.items.status==='Cancelled' ? 'selected'
                                                             : '' %>>Cancel</option>
-                                                            <option value="Delivered" <%=item.status==='Delivered' ? 'selected'
+                                                            <option value="Delivered" <%=order.items.status==='Delivered' ? 'selected'
                                                             : '' %>>Deliver</option>
                                                         <% } %>
                                          
@@ -88,11 +88,11 @@
                                         </td>
 
                                         <td style="width: 15%;">
-                                            <a href="/admin/orders/orderdetail?orderid=<%= order._id %>&itemid=<%= item._id %>"><button
+                                            <a href="/admin/orders/orderdetail?orderid=<%= order._id %>&itemid=<%= order.items._id %>"><button
                                                     type="button" class="btn btn-primary sm"
                                                     style="font-size: 12px; padding: 4px 8px;">Details</button></a>
                                         </td>
-                                        <% }); %>
+                                  
                                         <% }); %>
                             </tbody>
                         </table> <!-- table-responsive.// -->

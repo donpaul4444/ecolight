@@ -3,6 +3,7 @@ const banner=require("../model/banner")
 const product = require("../model/products");
 const cat = require("../model/category");
 const Cart = require("../model/cart");
+const order = require("../model/order");
 const coupon=require("../model/coupons")
 const bcrypt = require("bcrypt");
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -158,14 +159,37 @@ module.exports = {
 
   getAdminLogin: (req, res) => {
     if(req.session.admin){
-      res.redirect("/admin/dashboard");
+      res.redirect("/admin/dashboard")
   }else{
     res.render("admin/adminlogin",{err:""});
   }
   },
-  getAdminDashboard:(req,res)=>{
-    res.render("admin/dashboard")
-  },
+  getAdminDashboard:async(req,res,next)=>{
+ 
+      try {
+        const orders = await order.aggregate([
+          {$unwind:"$items"},
+          { $match: { "items.status": 'Delivered' } },
+          {
+            $group: {
+              _id: { $dateToString: { format: '%Y-%m-%d', date: '$orderDate' } },
+              total: { $sum: '$items.finalprice' },
+              count: { $sum: 1 },
+            },
+          },
+          { $sort: { _id: 1 } },
+        ])
+
+  
+        const orderCounts = await order.aggregate([{ $group: { _id: '$items.status', count: { $sum: 1 } } }])
+  
+        const data = orders.map(({ _id, total, count }) => ({ date: _id, amount: total, count }))
+        res.render('admin/dashboard', { data, orderCounts,orders})
+      } catch (error) {
+        next(error)
+      }
+    },
+
   postAdminLogin: async(req,res)=>{
     const data=req.body
     try {

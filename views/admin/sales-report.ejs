@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+
+<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-products-list.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:00 GMT -->
+
+<head>
+    <meta charset="utf-8">
+    <title>Admin</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <%- include('../partials/astylesheet') %>
+
+</head>
+
+<body>
+    <%- include('../partials/aheader',{title:"sales"}) %>
+
+        <section class="content-main main-wrap">
+
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Sales Report</h2>
+                </div>
+                <div>
+                    <a href="/admin/salesreport/download" class="btn btn-primary btn-sm rounded">Download</a>
+                </div>
+            </div>
+
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Index</th>
+                                    <th>Date</th>
+                                    <th>Order Id</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th>Discount</th>
+                                    <th>Final Price</th>
+                              
+                                </tr>
+                            </thead>
+                            <tbody>
+                               
+                                <% orders.forEach((order,index)=> { %>
+                                
+                                    <tr>
+                                        <td style="width: 5%;">
+                                            <%= index %> 
+                                        </td>
+                                        <td style="width: 10%;">
+                                            <%= order.orderDate.toLocaleDateString() %>
+                                        </td>
+                                        <td style="width: 20%;">
+                                            <%= order._id%>
+                                       </td>
+                                       <td style="width: 15%;">
+                                        <%= order.items.quantity %>
+                                      </td>
+                                        <td style="width: 15%;">
+                                            ₹ <%= order.items.price*order.items.quantity%>
+                                        </td>
+                                        <td style="width: 15%;">
+                                            ₹ <%= order.items.discountprice %>
+                                        </td>
+                                        <td style="width: 15%;">
+                                            ₹ <%= order.items.finalprice %>
+                                        </td>
+                                        <td style="width: 15%;">
+                                            total:
+                                        </td>
+                                    
+                                        <% }); %>
+                            </tbody>
+                        </table> 
+                        <div style="float: right;padding-right: 100px;">
+                            <% let totalAmount = 0; %>
+                            <% let discount = 0; %>
+                            <% let grand = 0; %>
+                                <% orders.forEach((order)=> { %><% totalAmount += order.items.price * order.items.quantity; discount += order.items.discountprice ;grand += order.items.finalprice ;%><% }); %> 
+                            <p style="font-weight: bold;">Total : ₹<%= totalAmount %></p>
+                            <p style="font-weight: bold;">Discount: ₹<%= discount %></p>
+                            <p style="font-weight: bold;">Grand Total: ₹<%= grand %></p>
+                        </div>
+                    </div>
+                </div> 
+            </div> 
+
+
+        </section> 
+        </main>
+        <%- include('../partials/afooter') %>
+
+            
+           
+</body>
+
+</html>

@@ -1,6 +1,7 @@
 const banner=require("../model/banner")
 const ITEMS_PER_PAGE = 6;
 module.exports={
+  // To access bannerpage  on admin side
     getBanner:async(req,res,next)=>{
         const page = req.query.page || 1;
         const bannercount = await banner.countDocuments({});
@@ -13,14 +14,15 @@ module.exports={
           next(err)
         }
       },
+      // To access banner adding page
       getAddBanner: (req, res) => {
         res.render("admin/banner-add");
       },
+      // Adding banner to database
       postAddBanner: async (req, res,next) => {
         try {        
           const data=JSON.parse(req.body.productData);
           data.image = req.file ? req.file.filename : undefined;
-    
           await banner.create(data)
           res.status(200).json({ success: true });
         } catch (err) {
@@ -28,7 +30,7 @@ module.exports={
         
         }
       },
-
+      // changing banner status 
       listBanner: async (req, res, next) => {
         const id = req.query.id;
         try {
@@ -44,6 +46,7 @@ module.exports={
           next(err)
         }
       },
+       // To access banner editing page
       getEditBanner: async (req, res) => {
         let id = req.query.id;
         try {
@@ -54,6 +57,7 @@ module.exports={
           console.log(err);
         }
       },
+      // upadte banner details to database
       postEditBanner: async (req,res,next) => {
         try {
           const data=JSON.parse(req.body.productData);

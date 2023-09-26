@@ -29,7 +29,7 @@
                             <span class="fw-semibold">Overall Sales</span>
                             <div id="total-sales" class="h4 fw-bold"><% let totalSum = 0; %>
                                 <% orders.forEach(order => { totalSum += order.total; }); %>
-                                ₹<%= totalSum %></div>
+                                ₹<%= Math.floor(totalSum) %></div>
                         </div>
 
                         <div class="border rounded px-4 py-2">
@@ -37,7 +37,7 @@
                             <div id="total-count" class="h4 fw-bold"><% let total = 0; %><% let item = 0; %>
                                 <% orders.forEach(order => { total += order.total; }); %>
                                 <% orders.forEach(order => { item += order.count; }); %>
-                                ₹<%= total/item %></div>
+                                ₹<%= Math.floor(total/item) %></div>
                         </div>
 
                         <div class="border rounded px-4 py-2">

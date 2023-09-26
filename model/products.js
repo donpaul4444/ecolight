@@ -13,12 +13,6 @@ const productSchema = new mongoose.Schema({
     enum:["Philips","Sinoman","Homesake","Eliante","Crompton"],
     required: true,
   },
-  wishlist: {
-    type: String,
-    enum:["list","unlist"],
-    required: true,
-    default: 'unlist',
-  },
   orderDate: {
     type: Date, 
     default: Date.now, 

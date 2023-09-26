@@ -1,9 +1,12 @@
 const cat = require("../model/category");
 const product = require("../model/products");
+const users = require("../model/users");
 const fs = require("fs");
 const path = require("path");
 const ITEMS_PER_PAGE = 6;
 module.exports = {
+
+  // To access products listing page in admin side
   getProducts: async (req, res) => {
     const page = req.query.page || 1;
     const productscount = await product.countDocuments({});
@@ -15,12 +18,15 @@ module.exports = {
       .limit(ITEMS_PER_PAGE);
     res.render("admin/products", { products, totalpages, page });
   },
+
+  // To access product add page in admin side
   addProduct: async (req, res) => {
     const category = await cat.find({});
     const products = await product.find({});
-
     res.render("admin/products-add", { category, products });
   },
+
+  // To adding new product to data base
   postAddProduct: async (req, res, next) => {
     try {
       const data = JSON.parse(req.body.productData);
@@ -40,6 +46,8 @@ module.exports = {
       next(error);
     }
   },
+
+  // To change the status of the products
   listProduct: async (req, res, next) => {
     const id = req.query.id;
     try {
@@ -55,6 +63,8 @@ module.exports = {
       next(err);
     }
   },
+
+  // To access product edit page in admin side
   getEditProduct: async (req, res) => {
     let id = req.query.id;
     try {
@@ -65,6 +75,8 @@ module.exports = {
       console.log(err);
     }
   },
+
+  // To edit product details and apply data to database
   postEditProduct: async (req, res, next) => {
     try {
       const data = JSON.parse(req.body.productData);
@@ -83,7 +95,6 @@ module.exports = {
           prod.images.push(element.filename);
         });
       }
-
       await prod.save();
       res.status(200).json({ success: true });
     } catch (error) {
@@ -91,12 +102,17 @@ module.exports = {
     }
   },
 
+//  To access product detail page  in user side
   getProductDetail: async (req, res) => {
     const id = req.query.id;
+    const newuser=req.session.user
+    const user= await users.findById(newuser._id)
     let categories = await cat.find({ status: "List" });
     const item = await product.findById(id).populate("category");
-    res.render("user/productdetail", { item, categories: categories });
+    res.render("user/productdetail", { item, categories: categories ,user});
   },
+
+  // To delete images in product edit page
   deleteImage: async (req, res, next) => {
     const id = req.query.id;
     const imageid = req.query.imageid;
@@ -105,7 +121,6 @@ module.exports = {
       const item = await product.findById(id);
       item.images = item.images.filter((img) => img !== imageid);
       await item.save();
-
       const imagePath = path.join(
         __dirname,
         "..",
@@ -119,6 +134,8 @@ module.exports = {
       next(err);
     }
   },
+
+//  To access products listing page in user side 
   getProductListNew: async (req, res, next) => {
     try {
       const page = req.query.page || 1;
@@ -163,9 +180,6 @@ module.exports = {
 
         {$match: filter},
       ])
-
-
-
       let products = await product.aggregate([
         {
           $lookup: {
@@ -196,10 +210,7 @@ module.exports = {
         {$group:{_id:null,count:{$sum:1}}}
       ])
 
-
-
-      const totalpages = Math.ceil(productscount[0].count / ITEMS_PER_PAGE);
-     
+      const totalpages = Math.ceil(productscount[0].count / ITEMS_PER_PAGE);    
       res.render("user/productlist", {
         products,
         page,
@@ -210,51 +221,60 @@ module.exports = {
       next(error);
     }
   },
+
+
+// Add product to wishlist 
   getWishlistAdd: async (req, res, next) => {
     try {
       const id = req.query.id;
-      const data = await product.findByIdAndUpdate(
-        id,
-        { wishlist: "list" },
-        { new: true }
+      const user=req.session.user
+      const data = await users.findByIdAndUpdate(
+        { _id: user._id },
+        { $push: { wishlist: id } },
+        { new: true } 
       );
-      res.redirect(`/productlist/productdetail?id=${data._id}`);
+      res.redirect(`/productlist/productdetail?id=${id}`);
     } catch (error) {
       next(error);
     }
   },
+
+  // To remove products from wishlist 
   getWishlistRemove: async (req, res, next) => {
     try {
       const id = req.query.id;
-      const data = await product.findByIdAndUpdate(
-        id,
-        { wishlist: "unlist" },
-        { new: true }
+      const user=req.session.user
+      await users.updateOne(
+        { _id: user._id },
+        { $pull: { wishlist: id } }
       );
-      res.redirect(`/productlist/productdetail?id=${data._id}`);
+      res.redirect(`/productlist/productdetail?id=${id}`);
     } catch (error) {
       next(error);
     }
   },
+
+  // To remove products from wishlist 
   getWishlistDelete: async (req, res, next) => {
     try {
       const id = req.query.id;
-      await product.findByIdAndUpdate(
-        id,
-        { wishlist: "unlist" },
-        { new: true }
+      const user=req.session.user
+      await users.updateOne(
+        { _id: user._id },
+        { $pull: { wishlist: id } }
       );
       res.redirect("/wishlist");
     } catch (error) {
       next(error);
     }
   },
+
+  // To access wishlist page from user side
   getWishlist: async (req, res, next) => {
     let user = req.session.user;
     try {
-      const products = await product.find({ wishlist: "list" });
-
-      res.render("user/wishlist", { products, user });
+      data= await users.findOne({_id:user._id}).populate("wishlist")
+      res.render("user/wishlist", { data ,user});
     } catch (error) {
       next(error);
     }

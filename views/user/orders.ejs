@@ -19,6 +19,7 @@
                     <%- include('../partials/usersidebar',{option:"orders"}) %>
                 </div>
                 <div class="flex-grow-1">
+                    <% if (orderlist.length > 0) { %>
                     <% orderlist.forEach(order=> { %>
                         <% order.items.forEach(item=> { %>
                             <a href="/user/orderlist?orderid=<%= order._id %>&itemid=<%= item._id %>">
@@ -53,6 +54,10 @@
                             </a>
                             <% }); %>
                                 <% }); %>
+                       
+                                <% } else { %>  
+                                    <span style="font-size: larger ;color:red">Orderlist is empty</span>
+                                    <% } %>
 
                 </div>
             </div>

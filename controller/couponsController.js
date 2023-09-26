@@ -1,6 +1,7 @@
 const coupon = require("../model/coupons");
 const ITEMS_PER_PAGE = 6;
 module.exports = {
+  // To access coupon lisiting page in admin side
   getCoupons: async (req, res, next) => {
     const page = req.query.page || 1;
     const couponscount = await coupon.countDocuments({});
@@ -13,19 +14,24 @@ module.exports = {
       next(err);
     }
   },
+
+  // To access coupon add page in admin side
   getAddCoupons: (req, res) => {
     res.render("admin/coupons-add");
   },
+
+  // To add coupon details to database
   postAddCoupons: async (req, res,next) => {
     try {
      const data=req.body
       await coupon.create(data)
       res.status(200).json({ success: true });
     } catch (err) {
-      next(err)
-    
+      next(err) 
     }
   },
+
+// To change the status of the coupons
   listCoupons: async (req, res, next) => {
     const id = req.query.id;
     try {
@@ -41,6 +47,8 @@ module.exports = {
       next(err)
     }
   },
+
+  // To access coupon edit page in admin side
   getEditCoupons: async (req, res) => {
     let id = req.query.id;
     try {
@@ -51,8 +59,9 @@ module.exports = {
       console.log(err);
     }
   },
+
+  // To apply coupon edited data to database
   postEditCoupons: async (req,res,next) => {
-   
     try {
       const data=req.body
       console.log(data);
@@ -60,8 +69,7 @@ module.exports = {
       coupons.name = data.name;
       coupons.percentage = data.percentage;
       coupons.minamount=data.minamount
-      coupons.maxamount=data.maxamount
-    
+      coupons.maxamount=data.maxamount 
       await coupons.save();
       res.status(200).json({ success: true });
     } catch (err) {

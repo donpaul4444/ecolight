@@ -19,29 +19,32 @@
                     <%- include('../partials/usersidebar',{option:"wishlist"}) %>
                 </div>
                 <div class="flex-grow-1">
-                    <% products.forEach(product=> { %>
-                        <a href="/productlist/productdetail?id=<%= product._id %>">
-                        <div
-                            style="background-color: rgb(235, 235, 235);  padding: 10px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-bottom: 20px;">
+                    <% if (data.wishlist && data.wishlist.length > 0) { %>
+                      <% data.wishlist.forEach(product => { %>
+                        <a href="/productlist/productdetail?id=<%= product._id %>" style="text-decoration: none; color: inherit;">
+                          <div style="background-color: rgb(235, 235, 235); padding: 10px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-bottom: 20px;">
                             <div class="d-flex justify-content-between">
-                                <div class="d-flex">
-                                <div> <img src="/uploads/<%= product.images[0] %>" width="80"
-                                        height="100" alt="Item"></div>
+                              <div class="d-flex">
+                                <div><img src="/uploads/<%= product.images[0] %>" width="80" height="100" alt="Item"></div>
                                 <div style="margin-left: 20px;">
-                             
-                                        <p ><span><strong><%= product.name %> </strong></span> </p>
-                                        <p ><span>Price: ₹<%= product.price %> </span> </p>
+                                  <p><span><strong><%= product.name %></strong></span></p>
+                                  <p><span>Price: ₹<%= product.price %></span></p>
                                 </div>
-                            </div>
-                            <div>
-                               <a href="/wishlist/delete?id=<%= product._id %>"><button class="btn btn-primary" style="padding: 2px 5px; font-size: 7px;">Remove</button></a> 
                               </div>
-                              
+                              <div>
+                                <a href="/wishlist/delete?id=<%= product._id %>" style="text-decoration: none;">
+                                  <button class="btn btn-primary" style="padding: 2px 5px; font-size: 7px;">Remove</button>
+                                </a>
+                              </div>
                             </div>
-                        </div>
-                    </a>
-                        <% }); %>
-                </div>
+                          </div>
+                        </a>
+                      <% }); %>
+                    <% } else { %>
+                      <span style="font-size: larger; color: red;">wishlist is empty</span>
+                    <% } %>
+                  </div>
+                  
             </div>
 
         </div>

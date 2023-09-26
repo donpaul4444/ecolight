@@ -4,22 +4,19 @@ const Product = require("../model/products");
 const coupon= require("../model/coupons")
 
 module.exports = {
+  // To access cart page in user side
   getCart: async (req, res, next) => {
     let id = req.session.user._id;
-
     try {
       let categories = await cat.find({ status: "List" });
       let cartDetails = await Cart.findOne({ user: id }).populate({path:"items.productId"})
       let coupons= await coupon.find({status:"List"})
-      
         res.render("user/cart", { cartDetails, categories,coupons });
- 
-
     } catch (error) {
       next(error);
     }
   },
-
+// To adding new items to cart
   getAddCart: async (req, res, next) => {
     try {
       const userId = req.session.user._id;
@@ -55,6 +52,7 @@ module.exports = {
       next(error);
     }
   },
+  // To delete the corresponding cart item
   deleteCart: async (req, res,next) => {
     let id = req.session.user._id;
     let itemId = req.query.itemId;
@@ -65,17 +63,15 @@ module.exports = {
       next(error)
     }
   },
+
+  // To change the quantity of items in the cart
   getQuantityChange: async(req,res,next)=>{
     let id = req.session.user._id;
     let itemId = req.query.id;
     let quantity=req.query.quantity
-    console.log(itemId);
-
     try {
-  
         await Cart.findOneAndUpdate( { user: id, "items._id": itemId }, { $set: {"items.$.quantity": quantity } } );
-        res.status(200).json({ success: true});
-     
+        res.status(200).json({ success: true});    
     } catch (error) {
       next(error)
     }

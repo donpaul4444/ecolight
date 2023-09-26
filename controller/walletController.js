@@ -1,9 +1,13 @@
 const wallet= require("../model/wallet")
 const order = require("../model/order");
 module.exports={
+  
+  // To access wallet page 
     getWallet:async(req,res,next)=>{
+      try {
         const user=req.session.user
         const userwallet= await wallet.findOne({user})
+        if(userwallet){
        let totalcredit=0
        let totaldebit=0
         userwallet.items.forEach((item)=>{
@@ -12,14 +16,15 @@ module.exports={
         })
         const total=totalcredit-totaldebit
         userwallet.total=total
-
-        await userwallet.save()
-        try {
+        await userwallet.save()}
+       
             res.render("user/wallet",{user,userwallet})
         } catch (error) {
             next (error)
         }
     },
+
+// Add money to wallet
     getAddWallet:async(req,res,next)=>{
         try {
         const user= req.session.user
@@ -43,7 +48,7 @@ module.exports={
             { new: true }
           );
 
-       const userwallet= await wallet.findOne({user})
+       let userwallet= await wallet.findOne({user:user._id})
        if(userwallet){
         const temp={
             title: `Refund for Order id:${orderid}`  ,
@@ -61,9 +66,11 @@ module.exports={
       items.push(temp)
       const wallets={
         user,
+        total:0,
         items
       }
-      await wallet.create(wallets)
+
+       userwallet=await wallet.create(wallets)
       }
       let totalcredit=0
       let totaldebit=0
@@ -76,6 +83,7 @@ module.exports={
        await userwallet.save()
         res.redirect(`/user/orderlist?orderid=${orderid}&itemid=${itemid}`)
         } catch (error) {
+          console.log(error);
             next(error)
         }
     }

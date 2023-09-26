@@ -1,6 +1,7 @@
 const cat = require("../model/category");
 const ITEMS_PER_PAGE = 6;
 module.exports = {
+  // To access category page in admin side
   getCategories: async (req, res) => {
     const page = req.query.page || 1;
     const categorycount = await cat.countDocuments({});
@@ -13,16 +14,17 @@ module.exports = {
       console.log(err);
     }
   },
+
+  // To access category add page
   getAddCategory: (req, res) => {
     res.render("admin/categories-add");
   },
 
+  // To add new category to database
   postAddCategory: async (req, res,next) => {
-    try {
-      
+    try {    
       const data=JSON.parse(req.body.productData);
       data.images = req.file ? req.file.filename : undefined;
-
       await cat.create(data)
       res.status(200).json({ success: true });
     } catch (err) {
@@ -30,6 +32,8 @@ module.exports = {
     
     }
   },
+
+  // To change status of the category
   listCategory: async (req, res, next) => {
     const id = req.query.id;
     try {
@@ -44,20 +48,20 @@ module.exports = {
     } catch (err) {
       next(err)
     }
-
-
   },
+
+  // To access category edit page
   getEditCategory: async (req, res) => {
     let id = req.query.id;
     try {
       const data = await cat.findById(id);
-
       res.render("admin/categories-edit", { data });
     } catch (err) {
       console.log(err);
     }
   },
 
+// Edited category details o database
   postEditCategory: async (req,res,next) => {
     try {
       const data=JSON.parse(req.body.productData);

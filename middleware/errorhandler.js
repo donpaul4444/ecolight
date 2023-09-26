@@ -29,7 +29,7 @@ const errorHandler = (err, req, res, next) => {
 			success: false,
 			message: message,
 		})
-	else res.status(statusCode).render('error', { message: message })
+	else res.status(statusCode).render('error', { message: err })
 }
 
 module.exports = errorHandler

@@ -68,7 +68,7 @@
 			<div class="container">
 				<div class="row row-pb-lg product-detail-wrap">
 					<aside class="col-lg-6">
-						<div class="border rounded-4 mb-3 d-flex justify-content-center" >
+						<div class="border rounded-4 mb-3 d-flex justify-content-center">
 							<div id="img-zoomer-box">
 								<img id="selectedImage" style="max-width: 100%; max-height: 50vh; margin: auto;"
 									class="rounded-4 fit" src="/uploads/<%= item.images[0] %>" />
@@ -104,16 +104,20 @@
 									<i class="icon-star-half"></i>
 									(74 Rating)
 								</span>
-								<% if (item.wishlist=="list") { %>
-								<span>
-									<a href="/wishlist/remove?id=<%= item._id %>"><img src="/images/red heart.png" alt="Red Heart" style="width: 20px; height: auto;"></a>
-								</span>
-								<% } else { %>
-								<span>
-									<a href="/wishlist/add?id=<%= item._id %>"><img src="/images/white heart.png" alt="Red Heart" style="width: 20px; height: auto;"></a>
-								</span>
-								<% } %>
-							
+								
+								
+								<% if (user.wishlist.find(prod=>prod.toString()==item._id.toString())) { %>
+									<span>
+									  <a href="/wishlist/remove?id=<%= item._id %>"><img src="/images/red heart.png" alt="Red Heart" style="width: 20px; height: auto;"></a>
+									</span>
+								  <% } else { %>
+									<span>
+									  <a href="/wishlist/add?id=<%= item._id %>"><img src="/images/white heart.png" alt="Red Heart" style="width: 20px; height: auto;"></a>
+									</span>
+								  <% } %>
+								  
+
+
 							</p>
 							<p>
 								<%= item.description %>

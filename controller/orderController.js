@@ -16,6 +16,7 @@ const razorpay = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 module.exports = {
+// The checkout button is routing to this controller and it redirect to order complete page
   getOrderComplete: async (req, res, next) => {
     let user = req.session.user;
     let addressId = req.query.selectedAddress;
@@ -25,11 +26,9 @@ module.exports = {
     let totalprice = 0;
     let grandtotal = 0;
     let couponprice = 0;
-
     try {
       const userid = await users.findById(user._id);
       const address = userid.address.id(addressId);
-
       const userCart = await Cart.findOne({ user: user._id }).populate(
         "items.productId"
       );
@@ -142,6 +141,7 @@ module.exports = {
     }
   },
 
+  // The razorpay respose received in this router and redirect to order complete page
   postRazorpay: async (req, res, next) => {
     try {
       const response = req.body;
@@ -170,6 +170,7 @@ module.exports = {
     }
   },
 
+  // To access orders list in user side
   getOrders: async (req, res, next) => {
     try {
       let user = req.session.user;
@@ -183,6 +184,7 @@ module.exports = {
     }
   },
 
+  // To access order detail page in user side
   getOrderList: async (req, res, next) => {
     try {
       let user = req.session.user;
@@ -197,25 +199,17 @@ module.exports = {
     }
   },
 
+// To access order list in admin side
   getAdminOrders: async (req, res, next) => {
     try {
       const page = req.query.page || 1;
-
       const orderscount = await order.aggregate([
         { $unwind: "$items" },
         { $match: { "items.status": { $ne: "Pending" },} },
         {$group:{_id:null,sum:{$sum:1}}},
       ])
 
-
       const totalpages = Math.ceil(orderscount[0].sum / ITEMS_PER_PAGE);
-      // let orders = await order
-      //   .find({})
-      //   .populate("items.productId")
-      //   .sort({ orderDate: -1 })
-      //   .skip(ITEMS_PER_PAGE * (page - 1))
-      //   .limit(ITEMS_PER_PAGE);
-
           const orders = await order.aggregate([
             { $unwind: "$items" },
             { $match: { "items.status": { $ne: "Pending" },} },
@@ -236,6 +230,8 @@ module.exports = {
       next(error);
     }
   },
+
+  // To access order detail page in admin side
   getAdminOrderDetail: async (req, res, next) => {
     try {
       const orderid = req.query.orderid;
@@ -249,11 +245,11 @@ module.exports = {
     }
   },
 
+  // To change the status of the order
   postUpdateOrderStatus: async (req, res, next) => {
     const orderid = req.query.orderId;
     const itemid = req.query.itemId;
     const status = req.query.status;
-
     try {
       const updatedOrder = await order.findOneAndUpdate(
         {
@@ -273,10 +269,12 @@ module.exports = {
     }
   },
 
+  // To access order complete page
   getOrderCompletePage: async (req, res, next) => {
     res.render("user/ordercomplete");
   },
 
+// To cancel order from user side
   getCancelOrder: async (req, res, next) => {
     const orderid = req.query.orderid;
     const itemid = req.query.itemid;
@@ -301,6 +299,7 @@ module.exports = {
     }
   },
 
+  // To download invoice
   getInvoice: async (req, res, next) => {
     try {
       const itemid = req.query.itemid;
@@ -359,13 +358,7 @@ module.exports = {
             price: items.price,
             discount: 100,
           },
-          {
-            quantity: items.quantity,
-            description: items.productId.name,
-            "tax-rate": 0,
-            price: items.price,
-            discount: 100,
-          },
+    
         ],
         "bottom-notice": "Happy shoping and visit again",
         settings: {
@@ -391,6 +384,7 @@ module.exports = {
     }
   },
 
+  // To access salesreport page in admin side
   getSalesReport: async (req, res, next) => {
     try {
       const orders = await order.aggregate([
@@ -404,6 +398,7 @@ module.exports = {
     }
   },
 
+  // To download sales report
   getSalesReportDownload: async (req, res, next) => {
     try {
       const orders = await order.aggregate([

@@ -14,8 +14,9 @@ const ITEMS_PER_PAGE = 6;
 
 module.exports = {
   // To access home page from user side
-  getHome: async (req, res) => {
-    let categories = await cat.find({status:"List"});
+  getHome: async (req, res,next) => {
+    try {
+      let categories = await cat.find({status:"List"});
     let banners= await banner.find({status:"List"})
     let newproducts = await product.aggregate([
       {
@@ -42,19 +43,28 @@ module.exports = {
       },
     ]);
     res.render("user/home", {categories,newproducts,banners});
+    } catch (error) {
+      next(error)
+    } 
   },
+
 
   // To access user login page
-  getLogin: (req, res) => {
-    if(req.session.user){
-      res.redirect("/");
-  }else{
-      res.render("user/login",{ err:""})
-  }  
+  getLogin: (req, res, next) => {
+    try {
+      if(req.session.user){
+        res.redirect("/");
+    }else{
+        res.render("user/login",{ err:""})
+    }  
+    } catch (error) {
+      next(error)
+    }  
   },
 
+
 // Verifying the user 
-  postLogin: async (req, res) => {
+  postLogin: async (req, res,next) => {
     const data = req.body;
 
     try {
@@ -75,17 +85,23 @@ module.exports = {
         res.render("user/login", { err: "Invalid username or password" });
       }
     } catch (err) {
-      console.log(err);
+      next(err)
     }
   },
 
+
 // To access signup page from user side
-  getSignup: (req, res) => {
-    res.render("user/signup", { email: "", mob: "" });
+  getSignup: (req, res,next) => {
+    try {
+      res.render("user/signup", { email: "", mob: "" });
+    } catch (error) {
+      next(error)
+    }
   },
 
+
 // Signup and OTP verification
-  postSignup: async (req, res) => {
+  postSignup: async (req, res,next) => {
     const data = req.body;
     try {
       const user = await users.findOne({ email: data.email });
@@ -114,12 +130,13 @@ module.exports = {
         res.redirect("/login");
       }
     } catch (err) {
-      console.log(err);
+     next(err)
     }
   },
 
+
   // Verify the OTP
-  postOtp: async (req, res) => {
+  postOtp: async (req, res,next) => {
     const { mob } = req.body;
     try {
       const status = await users.countDocuments({ mobile: mob });
@@ -144,34 +161,49 @@ module.exports = {
         });
     } catch (error) {
       res.status(500).json({ success: false, error: "something went wrong" });
-      console.log(error);
+      next(error)
     }
   },
+
 
   // for changing the status of login/logout
-  getCheckUser: async(req, res) => {
-    if (req.session.user) {
-      res.status(200).json({ success: true });
-    } else {
-      res.status(200).json({ success: false });
+  getCheckUser: async(req, res,next) => {
+    try {
+      if (req.session.user) {
+        res.status(200).json({ success: true });
+      } else {
+        res.status(200).json({ success: false });
+      }
+    } catch (error) {
+      next(error)
     }
   },
 
+
   // user logout
-  getLogout: (req, res) => {
-    delete req.session.user;
-    res.redirect("/login");
+  getLogout: (req, res,next) => {
+    try {
+      delete req.session.user;
+      res.redirect("/login");
+    } catch (error) {
+      next(error)
+    }
   },
 
 
 // Admin login
-  getAdminLogin: (req, res) => {
-    if(req.session.admin){
-      res.redirect("/admin/dashboard")
-  }else{
-    res.render("admin/adminlogin",{err:""});
-  }
+  getAdminLogin: (req, res,next) => {
+    try {
+      if(req.session.admin){
+        res.redirect("/admin/dashboard")
+    }else{
+      res.render("admin/adminlogin",{err:""});
+    }
+    } catch (error) {
+      next(error)
+    }   
   },
+
 
 // To access admin dashboard
   getAdminDashboard:async(req,res,next)=>{
@@ -197,8 +229,9 @@ module.exports = {
       }
     },
 
+
     // verification of admin
-  postAdminLogin: async(req,res)=>{
+  postAdminLogin: async(req,res,next)=>{
     const data=req.body
     try {
       const user = await users.findOne({ email: data.email });
@@ -218,19 +251,24 @@ module.exports = {
         res.render("admin/adminlogin", { err: "Invalid username or password" });
       }
     } catch (err) {
-      console.log(err);
+      next(err)
     }
 
   },
 
   // Admin logout
-  getAdminLogout:(req,res)=>{
-    delete req.session.admin
-    res.redirect("/admin")
+  getAdminLogout:(req,res,next)=>{
+    try {
+      delete req.session.admin
+      res.redirect("/admin")
+    } catch (error) {
+      next(error)
+    }
   },
 
+
 // To access users list in admin side
-  getCustomers: async (req, res) => {
+  getCustomers: async (req, res,next) => {
     const page = req.query.page || 1;
     const userscount = await users.countDocuments({});
     const totalpages = Math.ceil(userscount / ITEMS_PER_PAGE);
@@ -239,12 +277,13 @@ module.exports = {
     try {
       res.render("admin/customers", { customers,page,totalpages});
     } catch (err) {
-      console.log(err);
+      next(err)
     }
   },
 
+
   // To block and unblock the user
-  getEditCustomer: async (req, res) => {
+  getEditCustomer: async (req, res,next) => {
     let id = req.query.id;
 
     try {
@@ -257,30 +296,44 @@ module.exports = {
       await data.save();
       res.redirect("/admin/customers")
     } catch (err) {
-      console.log(err);
+      next(err);
     }
   },
 
   // To access user profile page
-  getUserProfile: (req,res)=>{
+  getUserProfile: (req,res,next)=>{
+   try {
     let user=req.session.user
     res.render("user/userprofile" ,{user})
+   } catch (error) {
+    next(error)
+   }
   },
 
   // To access address page
-  getManageAddress: async (req,res)=>{
-    let user=req.session.user
-    let userdata= await users.findOne({_id:user._id})
-    const addressArray = userdata.address
-    res.render("user/address-manage" ,{user, addressArray})
+  getManageAddress: async (req,res,next)=>{
+    try {
+      let user=req.session.user
+      let userdata= await users.findOne({_id:user._id})
+      const addressArray = userdata.address
+      res.render("user/address-manage" ,{user, addressArray})
+    } catch (error) {
+      next(error)
+    }
   },
+
 
 // To add new address from user side
-  getAddAddress:(req,res)=>{
-    let user=req.session.user
-    res.render("user/address-add" ,{user})
+  getAddAddress:(req,res,next)=>{
+    try {
+      let user=req.session.user
+      res.render("user/address-add" ,{user})
+    } catch (error) {
+      next(error)
+    }
   },
 
+  
   // Address adding to database
   postAddAddress:async(req,res,next)=>{
     const userId = req.session.user._id

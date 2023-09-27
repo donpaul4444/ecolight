@@ -3,22 +3,28 @@ const ITEMS_PER_PAGE = 6;
 module.exports = {
   // To access coupon lisiting page in admin side
   getCoupons: async (req, res, next) => {
+    try {
     const page = req.query.page || 1;
     const couponscount = await coupon.countDocuments({});
     const totalpages = Math.ceil(couponscount / ITEMS_PER_PAGE);
     let coupons = await coupon.find({}).skip(ITEMS_PER_PAGE * (page - 1))
     .limit(ITEMS_PER_PAGE);
-    try {
       res.render("admin/coupons", { coupons, page, totalpages});
     } catch (err) {
       next(err);
     }
   },
 
+
   // To access coupon add page in admin side
-  getAddCoupons: (req, res) => {
-    res.render("admin/coupons-add");
+  getAddCoupons: (req, res,next) => {
+    try {
+      res.render("admin/coupons-add");
+    } catch (error) {
+      next (error)
+    }  
   },
+
 
   // To add coupon details to database
   postAddCoupons: async (req, res,next) => {
@@ -30,6 +36,7 @@ module.exports = {
       next(err) 
     }
   },
+
 
 // To change the status of the coupons
   listCoupons: async (req, res, next) => {
@@ -48,17 +55,18 @@ module.exports = {
     }
   },
 
+
   // To access coupon edit page in admin side
-  getEditCoupons: async (req, res) => {
+  getEditCoupons: async (req, res,next) => {
     let id = req.query.id;
     try {
       const data = await coupon.findById(id);
-
       res.render("admin/coupons-edit", { data });
     } catch (err) {
-      console.log(err);
+    next(err)
     }
   },
+
 
   // To apply coupon edited data to database
   postEditCoupons: async (req,res,next) => {

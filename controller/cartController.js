@@ -16,18 +16,17 @@ module.exports = {
       next(error);
     }
   },
+
+
 // To adding new items to cart
   getAddCart: async (req, res, next) => {
     try {
       const userId = req.session.user._id;
       const { productId, quantity } = req.query;
-
       const cartItem = {
         productId: productId,
         quantity: parseInt(quantity),
-      };
-
-     
+      }; 
       let userCart = await Cart.findOne({ user: userId });
       if (!userCart) {
         userCart = new Cart({
@@ -45,13 +44,14 @@ module.exports = {
           userCart.items.push(cartItem);
         }
       }
-
       await userCart.save();
       res.redirect("/cart");
     } catch (error) {
       next(error);
     }
   },
+
+
   // To delete the corresponding cart item
   deleteCart: async (req, res,next) => {
     let id = req.session.user._id;
@@ -63,6 +63,7 @@ module.exports = {
       next(error)
     }
   },
+  
 
   // To change the quantity of items in the cart
   getQuantityChange: async(req,res,next)=>{

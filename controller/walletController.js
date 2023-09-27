@@ -83,7 +83,7 @@ module.exports={
        await userwallet.save()
         res.redirect(`/user/orderlist?orderid=${orderid}&itemid=${itemid}`)
         } catch (error) {
-          console.log(error);
+          
             next(error)
         }
     }

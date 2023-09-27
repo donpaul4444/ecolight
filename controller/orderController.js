@@ -141,6 +141,7 @@ module.exports = {
     }
   },
 
+
   // The razorpay respose received in this router and redirect to order complete page
   postRazorpay: async (req, res, next) => {
     try {
@@ -170,6 +171,7 @@ module.exports = {
     }
   },
 
+
   // To access orders list in user side
   getOrders: async (req, res, next) => {
     try {
@@ -183,6 +185,7 @@ module.exports = {
       next(error);
     }
   },
+
 
   // To access order detail page in user side
   getOrderList: async (req, res, next) => {
@@ -198,6 +201,7 @@ module.exports = {
       next(error);
     }
   },
+
 
 // To access order list in admin side
   getAdminOrders: async (req, res, next) => {
@@ -231,6 +235,7 @@ module.exports = {
     }
   },
 
+
   // To access order detail page in admin side
   getAdminOrderDetail: async (req, res, next) => {
     try {
@@ -244,6 +249,7 @@ module.exports = {
       next(error);
     }
   },
+
 
   // To change the status of the order
   postUpdateOrderStatus: async (req, res, next) => {
@@ -269,10 +275,16 @@ module.exports = {
     }
   },
 
+
   // To access order complete page
   getOrderCompletePage: async (req, res, next) => {
-    res.render("user/ordercomplete");
+    try {
+      res.render("user/ordercomplete");
+    } catch (error) {
+      next(error);
+    }
   },
+
 
 // To cancel order from user side
   getCancelOrder: async (req, res, next) => {
@@ -298,6 +310,7 @@ module.exports = {
       next(error);
     }
   },
+
 
   // To download invoice
   getInvoice: async (req, res, next) => {
@@ -384,6 +397,7 @@ module.exports = {
     }
   },
 
+
   // To access salesreport page in admin side
   getSalesReport: async (req, res, next) => {
     try {
@@ -398,6 +412,7 @@ module.exports = {
     }
   },
 
+  
   // To download sales report
   getSalesReportDownload: async (req, res, next) => {
     try {

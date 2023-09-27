@@ -7,8 +7,9 @@ const ITEMS_PER_PAGE = 6;
 module.exports = {
 
   // To access products listing page in admin side
-  getProducts: async (req, res) => {
-    const page = req.query.page || 1;
+  getProducts: async (req, res, next) => {
+    try {
+      const page = req.query.page || 1;
     const productscount = await product.countDocuments({});
     const totalpages = Math.ceil(productscount / ITEMS_PER_PAGE);
 
@@ -17,14 +18,23 @@ module.exports = {
       .skip(ITEMS_PER_PAGE * (page - 1))
       .limit(ITEMS_PER_PAGE);
     res.render("admin/products", { products, totalpages, page });
+    } catch (error) {
+      next(error)
+    } 
   },
 
+
   // To access product add page in admin side
-  addProduct: async (req, res) => {
-    const category = await cat.find({});
-    const products = await product.find({});
-    res.render("admin/products-add", { category, products });
+  addProduct: async (req, res,next) => {
+    try {
+      const category = await cat.find({});
+      const products = await product.find({});
+      res.render("admin/products-add", { category, products });
+    } catch (error) {
+      next(error)
+    }  
   },
+
 
   // To adding new product to data base
   postAddProduct: async (req, res, next) => {
@@ -47,6 +57,7 @@ module.exports = {
     }
   },
 
+
   // To change the status of the products
   listProduct: async (req, res, next) => {
     const id = req.query.id;
@@ -64,17 +75,19 @@ module.exports = {
     }
   },
 
+
   // To access product edit page in admin side
-  getEditProduct: async (req, res) => {
+  getEditProduct: async (req, res,next) => {
     let id = req.query.id;
     try {
       const data = await product.findById(id).populate("category");
       const category = await cat.find({});
       res.render("admin/products-edit", { data, category });
     } catch (err) {
-      console.log(err);
+      next(err);
     }
   },
+
 
   // To edit product details and apply data to database
   postEditProduct: async (req, res, next) => {
@@ -102,15 +115,21 @@ module.exports = {
     }
   },
 
+
 //  To access product detail page  in user side
-  getProductDetail: async (req, res) => {
-    const id = req.query.id;
-    const newuser=req.session.user
-    const user= await users.findById(newuser._id)
-    let categories = await cat.find({ status: "List" });
-    const item = await product.findById(id).populate("category");
-    res.render("user/productdetail", { item, categories: categories ,user});
+  getProductDetail: async (req, res,next) => {
+    try {
+      const id = req.query.id;
+      const newuser=req.session.user
+      const user= await users.findById(newuser._id)
+      let categories = await cat.find({ status: "List" });
+      const item = await product.findById(id).populate("category");
+      res.render("user/productdetail", { item, categories: categories ,user});
+    } catch (error) {
+      next(error)
+    } 
   },
+
 
   // To delete images in product edit page
   deleteImage: async (req, res, next) => {
@@ -134,6 +153,7 @@ module.exports = {
       next(err);
     }
   },
+
 
 //  To access products listing page in user side 
   getProductListNew: async (req, res, next) => {
@@ -254,6 +274,7 @@ module.exports = {
     }
   },
 
+
   // To remove products from wishlist 
   getWishlistDelete: async (req, res, next) => {
     try {
@@ -268,6 +289,7 @@ module.exports = {
       next(error);
     }
   },
+
 
   // To access wishlist page from user side
   getWishlist: async (req, res, next) => {

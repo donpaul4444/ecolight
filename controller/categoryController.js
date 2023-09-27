@@ -2,23 +2,29 @@ const cat = require("../model/category");
 const ITEMS_PER_PAGE = 6;
 module.exports = {
   // To access category page in admin side
-  getCategories: async (req, res) => {
+  getCategories: async (req, res,next) => {
+    try {
     const page = req.query.page || 1;
     const categorycount = await cat.countDocuments({});
     const totalpages = Math.ceil(categorycount / ITEMS_PER_PAGE);
     let category = await cat.find({}).skip(ITEMS_PER_PAGE * (page - 1))
     .limit(ITEMS_PER_PAGE);
-    try {
       res.render("admin/categories", { category,page,totalpages });
     } catch (err) {
-      console.log(err);
+      next(err)
     }
   },
 
+
   // To access category add page
-  getAddCategory: (req, res) => {
-    res.render("admin/categories-add");
+  getAddCategory: (req, res,next) => {
+    try {
+      res.render("admin/categories-add");
+    } catch (error) {
+      next(error)
+    }
   },
+
 
   // To add new category to database
   postAddCategory: async (req, res,next) => {
@@ -50,14 +56,15 @@ module.exports = {
     }
   },
 
+
   // To access category edit page
-  getEditCategory: async (req, res) => {
+  getEditCategory: async (req, res,next) => {
     let id = req.query.id;
     try {
       const data = await cat.findById(id);
       res.render("admin/categories-edit", { data });
     } catch (err) {
-      console.log(err);
+       next(err)
     }
   },
 

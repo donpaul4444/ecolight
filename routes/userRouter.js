@@ -31,7 +31,6 @@ router.get("/user/orders",passing.cache,session.authuser,orderController.getOrde
 router.get("/user/orderlist",passing.cache,session.authuser,orderController.getOrderList)
 router.post("/razorpay",passing.cache,session.authuser,orderController.postRazorpay)
 router.get("/ordercomplete/page",passing.cache,session.authuser,orderController.getOrderCompletePage)
-router.get("/cancelorder",passing.cache,session.authuser,orderController.getCancelOrder)
 router.get("/invoice",passing.cache,session.authuser,orderController.getInvoice)
 
 
@@ -50,6 +49,7 @@ router.get("/cart/changequantity",passing.cache,session.authuser,cartController.
 
 router.get("/wallet",passing.cache,session.authuser,walletController.getWallet)
 router.get("/addwallet",passing.cache,session.authuser,walletController.getAddWallet)
+router.get("/cancelorder",passing.cache,session.authuser,walletController.getCancelOrder)
 
 
 

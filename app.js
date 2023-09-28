@@ -29,12 +29,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/", userRouter);
 app.use("/", adminRouter);
-// app.use(function (req, res, next) {
-//     next(createError(404));
-//   });
+
 
 app.use(errorHandler);
-
+app.use(function (req, res) {
+	res.status(404).render('error')
+})
 
 app.listen(3000, () => {
   console.log("server connected");

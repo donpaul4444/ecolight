@@ -278,22 +278,8 @@
                     const selectedReason = document.querySelector('input[name="reason"]:checked')
                     if (selectedReason) {
                         const reason = selectedReason.value
-
-                        fetch(`/cancelorder?orderid=${orderid}&itemid=${itemid}&reason=${reason}`, {
-                            method: "GET",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                        })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    window.location.href = `/user/orderlist?orderid=${orderid}&itemid=${itemid}`
-                                }
-                            })
-                            .catch(error => {
-                                console.error("Error:", error)
-                            })
+                        const redirectUrl = `/cancelorder?orderid=${orderid}&itemid=${itemid}&reason=${reason}`;
+                        window.location.href = redirectUrl;
                     }
                     else {
                         Toastify({

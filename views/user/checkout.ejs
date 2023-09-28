@@ -157,7 +157,7 @@
 				const placeOrderBtn = document.getElementById('placeOrderBtn');
 				const paymentRadios = document.querySelectorAll('[name="optradio"]');
 				const couponid = placeOrderBtn.getAttribute("data-name")
-				let selectedAddress = checkboxes[0].value
+				let selectedAddress = checkboxes[0]?.value
 				let selectedPaymentMethod = "Razorpay";
 
 				function updatePlaceOrderLink(checkbox) {
@@ -181,7 +181,7 @@
 
 
 				placeOrderBtn.addEventListener('click', function (event) {
-					if (selectedAddress == "") {
+					if (!selectedAddress) {
 						event.preventDefault()
 						Toastify({
 							text: "please choose address",
@@ -191,6 +191,7 @@
 								background: "#f00",
 							}
 						}).showToast();
+						return
 					}
 
 					const orderCompleteLink = `/ordercomplete?selectedAddress=${(selectedAddress)}&selectedPaymentMethod=${(selectedPaymentMethod)}&couponid=${couponid}`;

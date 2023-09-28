@@ -16,7 +16,7 @@ const razorpay = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 module.exports = {
-// The checkout button is routing to this controller and it redirect to order complete page
+  // The checkout button is routing to this controller and it redirect to order complete page
   getOrderComplete: async (req, res, next) => {
     let user = req.session.user;
     let addressId = req.query.selectedAddress;
@@ -27,7 +27,7 @@ module.exports = {
     let grandtotal = 0;
     let couponprice = 0;
     try {
-      const userid = await users.findById(user._id);
+      const userid = await users.findById(user._id);  
       const address = userid.address.id(addressId);
       const userCart = await Cart.findOne({ user: user._id }).populate(
         "items.productId"
@@ -79,6 +79,7 @@ module.exports = {
       if (flag == 1) {
         return res.redirect("/checkout?stockstatus=true");
       }
+   
 
       userCart.items.forEach(async (item) => {
         const products = await product.findById({ _id: item.productId._id });
@@ -141,7 +142,6 @@ module.exports = {
     }
   },
 
-
   // The razorpay respose received in this router and redirect to order complete page
   postRazorpay: async (req, res, next) => {
     try {
@@ -171,7 +171,6 @@ module.exports = {
     }
   },
 
-
   // To access orders list in user side
   getOrders: async (req, res, next) => {
     try {
@@ -185,7 +184,6 @@ module.exports = {
       next(error);
     }
   },
-
 
   // To access order detail page in user side
   getOrderList: async (req, res, next) => {
@@ -202,39 +200,37 @@ module.exports = {
     }
   },
 
-
-// To access order list in admin side
+  // To access order list in admin side
   getAdminOrders: async (req, res, next) => {
     try {
       const page = req.query.page || 1;
       const orderscount = await order.aggregate([
         { $unwind: "$items" },
-        { $match: { "items.status": { $ne: "Pending" },} },
-        {$group:{_id:null,sum:{$sum:1}}},
-      ])
+        { $match: { "items.status": { $ne: "Pending" } } },
+        { $group: { _id: null, sum: { $sum: 1 } } },
+      ]);
 
       const totalpages = Math.ceil(orderscount[0].sum / ITEMS_PER_PAGE);
-          const orders = await order.aggregate([
-            { $unwind: "$items" },
-            { $match: { "items.status": { $ne: "Pending" },} },
-            {$sort: {orderDate: -1}},
-            {$skip:ITEMS_PER_PAGE * (page - 1)},
-            {$limit:ITEMS_PER_PAGE},
-            {
-              $lookup: {
-                from: "products", // The name of the other collection
-                localField: "items.productId",
-                foreignField: "_id", 
-                as: "items.productId", 
-              },
-            },
-          ])
+      const orders = await order.aggregate([
+        { $unwind: "$items" },
+        { $match: { "items.status": { $ne: "Pending" } } },
+        { $sort: { orderDate: -1 } },
+        { $skip: ITEMS_PER_PAGE * (page - 1) },
+        { $limit: ITEMS_PER_PAGE },
+        {
+          $lookup: {
+            from: "products", // The name of the other collection
+            localField: "items.productId",
+            foreignField: "_id",
+            as: "items.productId",
+          },
+        },
+      ]);
       res.render("admin/orders", { orders, page, totalpages });
     } catch (error) {
       next(error);
     }
   },
-
 
   // To access order detail page in admin side
   getAdminOrderDetail: async (req, res, next) => {
@@ -249,7 +245,6 @@ module.exports = {
       next(error);
     }
   },
-
 
   // To change the status of the order
   postUpdateOrderStatus: async (req, res, next) => {
@@ -275,7 +270,6 @@ module.exports = {
     }
   },
 
-
   // To access order complete page
   getOrderCompletePage: async (req, res, next) => {
     try {
@@ -284,33 +278,6 @@ module.exports = {
       next(error);
     }
   },
-
-
-// To cancel order from user side
-  getCancelOrder: async (req, res, next) => {
-    const orderid = req.query.orderid;
-    const itemid = req.query.itemid;
-    const reason = req.query.reason;
-    try {
-      await order.findOneAndUpdate(
-        {
-          _id: orderid,
-          "items._id": itemid,
-        },
-        {
-          $set: {
-            "items.$.status": "Cancelled",
-            "items.$.cancel": reason,
-          },
-        },
-        { new: true }
-      );
-      res.status(200).json({ success: true });
-    } catch (error) {
-      next(error);
-    }
-  },
-
 
   // To download invoice
   getInvoice: async (req, res, next) => {
@@ -371,7 +338,6 @@ module.exports = {
             price: items.price,
             discount: 100,
           },
-    
         ],
         "bottom-notice": "Happy shoping and visit again",
         settings: {
@@ -397,7 +363,6 @@ module.exports = {
     }
   },
 
-
   // To access salesreport page in admin side
   getSalesReport: async (req, res, next) => {
     try {
@@ -406,13 +371,12 @@ module.exports = {
         { $unwind: "$user" },
         { $match: { "items.status": "Delivered" } },
       ]);
-      res.render("admin/sales-report",{orders});
+      res.render("admin/sales-report", { orders });
     } catch (error) {
       next(error);
     }
   },
 
-  
   // To download sales report
   getSalesReportDownload: async (req, res, next) => {
     try {
@@ -439,23 +403,22 @@ module.exports = {
       doc.fontSize(20).text("Sales Report", { align: "center" });
       doc.moveDown();
       const salesData = [];
-      let index = 1; 
+      let index = 1;
       // Sample sales data from your database (replace with your actual data retrieval logic)
-  
+
       orders.forEach((order) => {
         const quantity = order.items.quantity;
-        const total=order.items.price*order.items.quantity
-        const discount=order.items.discountprice
-        const orderId=order._id
-        const date= order.orderDate.toLocaleDateString() 
-       
+        const total = order.items.price * order.items.quantity;
+        const discount = order.items.discountprice;
+        const orderId = order._id;
+        const date = order.orderDate.toLocaleDateString();
 
         salesData.push({
-          index:index++,
+          index: index++,
           date,
           orderId,
           quantity,
-          total ,
+          total,
           discount,
         });
       });
@@ -535,4 +498,4 @@ module.exports = {
       next(error);
     }
   },
-}
+};

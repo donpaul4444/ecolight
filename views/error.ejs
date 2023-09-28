@@ -1,2 +1,46 @@
-<h1><%= message %></h1>
+<!DOCTYPE HTML>
+<html>
 
+<head>
+	<title>EcoLight</title>
+	<link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<%- include('../views/partials/ustylesheets.ejs') %>
+    <style>
+        #animationContainer {
+            width: 300px;
+            height: 300px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="d-flex flex-column justify-content-center align-items-center mt-5 gap-5">
+            <div id="animationContainer" class=""></div>
+            <p>The page you are trying to access cannot be found at the moment</p>
+            <a href="javascript:history.back()"><span class="btn-1 mt-5">Go Back</span></a>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"
+    integrity="sha512-jEnuDt6jfecCjthQAJ+ed0MTVA++5ZKmlUcmDGBv2vUI/REn6FuIdixLNnQT+vKusE2hhTk2is3cFvv5wA+Sgg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const container = document.getElementById('animationContainer');
+        const animation = lottie.loadAnimation({
+            container: container,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: '/images/animation_lk93ljwd.json'
+        });
+    });
+</script>
+</body>
+
+</html>

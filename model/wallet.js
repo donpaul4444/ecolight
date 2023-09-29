@@ -28,6 +28,7 @@ const walletSchema = new mongoose.Schema({
       },
       orderId: {
         type: String,
+        default:""
       }
     }
   ]

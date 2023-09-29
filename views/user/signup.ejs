@@ -24,7 +24,7 @@
 								<div class="card-body p-5">
 									<h2 class="text-uppercase text-center mb-3">Signup</h2>
 
-									<form id="myForm" method="POST" action="/signup">
+									<form id="myForm" method="POST" action="/signup?refId=<%= refId %>">
 
 										<div class="form-outline mb-2">
 											<label class="form-label" for="form3Example1cg">Your Name</label>
@@ -42,7 +42,7 @@
 											<div class="align-self-end">
 												<button type="button"
 													class="btn btn-success btn-block btn-sm gradient-custom-4 text-body"
-													id="otp">Send OTP</button>
+													id="otp1">Send OTP</button>
 											</div>
 										</div>
 										<span id="spanMobile" class="form-text text-danger">
@@ -55,6 +55,7 @@
 													class="form-control form-control-lg  " name="otp" />
 											</div>	
 										</div>
+										<span id="spanOtp" class="form-text text-danger"></span>
 										<div class="form-outline mb-2">
 											<label class="form-label" for="form3Example3cg">Your Email</label>
 											<input type="email" id="form3Example3cg"
@@ -106,7 +107,7 @@
 		}
 	</style>
 	<script>
-		const otp = document.querySelector("#otp")
+		const otp = document.querySelector("#otp1")
 		const enterOtp = document.getElementById("enterOtp")
 		const form = document.getElementById("myForm")
 
@@ -167,6 +168,10 @@
 			}
 			if (form.repeatpassword.value.trim() == "") {
 				spanPassword2.innerHTML = "password required"
+				event.preventDefault()
+			}
+			if (form.otp.value.trim()=="") {
+				spanOtp.innerHTML = "OTP required"
 				event.preventDefault()
 			}
 

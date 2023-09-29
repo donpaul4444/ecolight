@@ -6,6 +6,7 @@ const product = require("../model/products");
 const wallet = require("../model/wallet");
 const easyinvoice = require("easyinvoice");
 const PDFDocument = require("pdfkit");
+const moment = require("moment");
 const fs = require("fs");
 const ITEMS_PER_PAGE = 6;
 const Razorpay = require("razorpay");
@@ -27,7 +28,7 @@ module.exports = {
     let grandtotal = 0;
     let couponprice = 0;
     try {
-      const userid = await users.findById(user._id);  
+      const userid = await users.findById(user._id);
       const address = userid.address.id(addressId);
       const userCart = await Cart.findOne({ user: user._id }).populate(
         "items.productId"
@@ -79,7 +80,6 @@ module.exports = {
       if (flag == 1) {
         return res.redirect("/checkout?stockstatus=true");
       }
-   
 
       userCart.items.forEach(async (item) => {
         const products = await product.findById({ _id: item.productId._id });
@@ -366,12 +366,23 @@ module.exports = {
   // To access salesreport page in admin side
   getSalesReport: async (req, res, next) => {
     try {
+      let { from, to } = req.query;
+      const today = moment().format("YYYY-MM-DD");
+      if (!from || !to) {
+        from = today;
+        to = today;
+      }
+
+      if (from > to) [from, to] = [to, from];
+      to += "T23:59:59.999Z";
+
       const orders = await order.aggregate([
         { $unwind: "$items" },
-        { $unwind: "$user" },
-        { $match: { "items.status": "Delivered" } },
+        {$match: {"items.status": "Delivered",orderDate: { $gte: new Date(from), $lte:new Date(to) }}},
       ]);
-      res.render("admin/sales-report", { orders });
+      from = from.split('T')[0]
+			to = to.split('T')[0]
+      res.render("admin/sales-report", { orders,from,to });
     } catch (error) {
       next(error);
     }
@@ -380,10 +391,19 @@ module.exports = {
   // To download sales report
   getSalesReportDownload: async (req, res, next) => {
     try {
+      let { from, to } = req.query;
+      const today = moment().format("YYYY-MM-DD");
+      if (!from || !to) {
+        from = today;
+        to = today;
+      }
+
+      if (from > to) [from, to] = [to, from];
+      to += "T23:59:59.999Z";
+
       const orders = await order.aggregate([
         { $unwind: "$items" },
-        { $unwind: "$user" },
-        { $match: { "items.status": "Delivered" } },
+        {$match: {"items.status": "Delivered",orderDate: { $gte: new Date(from), $lte:new Date(to) }}},
       ]);
 
       // Create a new PDF document

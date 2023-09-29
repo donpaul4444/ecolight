@@ -69,49 +69,14 @@ module.exports={
         total:0,
         items
       }
-
        userwallet=await wallet.create(wallets)
       }
-      let totalcredit=0
-      let totaldebit=0
-       userwallet.items.forEach((item)=>{
-         totalcredit += item.credit
-         totaldebit += item.debit
-       })
-       const total=totalcredit-totaldebit
-       userwallet.total=total
-       await userwallet.save()
         res.redirect(`/user/orderlist?orderid=${orderid}&itemid=${itemid}`)
         } catch (error) {
-          
             next(error)
         }
     },
 
-  //   // To cancel order from user side
-  // getOrder: async (req, res, next) => {
-  //   const orderid = req.query.orderid;
-  //   const itemid = req.query.itemid;
-  //   const reason = req.query.reason;
-  //   try {
-  //     await order.findOneAndUpdate(
-  //       {
-  //         _id: orderid,
-  //         "items._id": itemid,
-  //       },
-  //       {
-  //         $set: {
-  //           "items.$.status": "Cancelled",
-  //           "items.$.cancel": reason,
-  //         },
-  //       },
-  //       { new: true }
-  //     );
-  //     res.status(200).json({ success: true });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // },
 
 
   getCancelOrder: async (req,res,next)=>{
@@ -161,15 +126,6 @@ module.exports={
 
      userwallet=await wallet.create(wallets)
     }
-    let totalcredit=0
-    let totaldebit=0
-     userwallet.items.forEach((item)=>{
-       totalcredit += item.credit
-       totaldebit += item.debit
-     })
-     const total=totalcredit-totaldebit
-     userwallet.total=total
-     await userwallet.save()
       res.redirect(`/user/orderlist?orderid=${orderid}&itemid=${itemid}`)
       } catch (error) {
         

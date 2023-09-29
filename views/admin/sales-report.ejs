@@ -28,78 +28,105 @@
                     <h2 class="content-title card-title">Sales Report</h2>
                 </div>
                 <div>
-                    <a href="/admin/salesreport/download" class="btn btn-primary btn-sm rounded">Download</a>
+                    <a href="/admin/salesreport/download?from=<%= from %>&to=<%= to %>" class="btn btn-primary btn-sm rounded">Download</a>
                 </div>
             </div>
 
 
             <div class="card mb-4">
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Index</th>
-                                    <th>Date</th>
-                                    <th>Order Id</th>
-                                    <th>Quantity</th>
-                                    <th>Total</th>
-                                    <th>Discount</th>
-                                    <th>Final Price</th>
-                              
-                                </tr>
-                            </thead>
-                            <tbody>
-                               
-                                <% orders.forEach((order,index)=> { %>
-                                
-                                    <tr>
-                                        <td style="width: 5%;">
-                                            <%= index %> 
-                                        </td>
-                                        <td style="width: 10%;">
-                                            <%= order.orderDate.toLocaleDateString() %>
-                                        </td>
-                                        <td style="width: 20%;">
-                                            <%= order._id%>
-                                       </td>
-                                       <td style="width: 15%;">
-                                        <%= order.items.quantity %>
-                                      </td>
-                                        <td style="width: 15%;">
-                                            ₹ <%= order.items.price*order.items.quantity%>
-                                        </td>
-                                        <td style="width: 15%;">
-                                            ₹ <%= order.items.discountprice %>
-                                        </td>
-                                        <td style="width: 15%;">
-                                            ₹ <%= order.items.finalprice %>
-                                        </td>
-                                      
-                                    
-                                        <% }); %>
-                            </tbody>
-                        </table> 
-                        <div style="float: right;padding-right: 100px;">
-                            <% let totalAmount = 0; %>
-                            <% let discount = 0; %>
-                            <% let grand = 0; %>
-                                <% orders.forEach((order)=> { %><% totalAmount += order.items.price * order.items.quantity; discount += order.items.discountprice ;grand += order.items.finalprice ;%><% }); %> 
-                            <p style="font-weight: bold;">Total : ₹<%= totalAmount %></p>
-                            <p style="font-weight: bold;">Discount: ₹<%= discount %></p>
-                            <p style="font-weight: bold;">Grand Total: ₹<%= grand %></p>
-                        </div>
+                    <div style="margin-bottom: 20px;">
+                        <form action="/admin/salesreport" method="get">
+                            <div class="d-flex gap-3 ms-1">
+                                <div>
+                                    <label class="span d-block" for="dateInput-from">From:</label>
+                                    <input type="date" id="dateInput-from" name="from" value="<%= from %>">
+                                </div>
+                                <div>
+                                    <label class="span d-block" for="dateInput-to">To:</label>
+                                    <input type="date" id="dateInput-to" name="to" value="<%= to %>">
+                                </div>
+                                <button type="submit" class="btn-2 d-inline-block p-2 px-4 align-self-end"
+                                    style="font-size: 11px;">Generate</button>
+                            </div>
+                        </form>
                     </div>
-                </div> 
-            </div> 
+                    <% if (orders.length>0) { %>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Index</th>
+                                        <th>Date</th>
+                                        <th>Order Id</th>
+                                        <th>Quantity</th>
+                                        <th>Total</th>
+                                        <th>Discount</th>
+                                        <th>Final Price</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <% orders.forEach((order,index)=> { %>
+
+                                        <tr>
+                                            <td style="width: 5%;">
+                                                <%= index %>
+                                            </td>
+                                            <td style="width: 10%;">
+                                                <%= order.orderDate.toLocaleDateString() %>
+                                            </td>
+                                            <td style="width: 20%;">
+                                                <%= order._id%>
+                                            </td>
+                                            <td style="width: 15%;">
+                                                <%= order.items.quantity %>
+                                            </td>
+                                            <td style="width: 15%;">
+                                                ₹ <%= order.items.price*order.items.quantity%>
+                                            </td>
+                                            <td style="width: 15%;">
+                                                ₹ <%= order.items.discountprice %>
+                                            </td>
+                                            <td style="width: 15%;">
+                                                ₹ <%= order.items.finalprice %>
+                                            </td>
 
 
-        </section> 
+                                            <% }); %>
+                                </tbody>
+                            </table>
+                            <div style="float: right;padding-right: 100px;">
+                                <% let totalAmount=0; %>
+                                    <% let discount=0; %>
+                                        <% let grand=0; %>
+                                            <% orders.forEach((order)=> { %><% totalAmount +=order.items.price *
+                                                    order.items.quantity; discount +=order.items.discountprice ;grand
+                                                    +=order.items.finalprice ;%>
+                                                    <% }); %>
+                                                        <p style="font-weight: bold;">Total : ₹<%= totalAmount %>
+                                                        </p>
+                                                        <p style="font-weight: bold;">Discount: ₹<%= discount %>
+                                                        </p>
+                                                        <p style="font-weight: bold;">Grand Total: ₹<%= grand %>
+                                                        </p>
+                            </div>
+                        </div>
+                    
+                        <% } else { %>  
+                            <span style="font-size: larger ;color:red">No Records Found ...!</span>
+                            <% } %>
+                </div>
+            </div>
+
+
+        </section>
         </main>
         <%- include('../partials/afooter') %>
 
-            
-           
+
+
 </body>
 
 </html>

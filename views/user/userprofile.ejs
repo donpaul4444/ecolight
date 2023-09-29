@@ -22,69 +22,30 @@
 
                 <div class=" flex-grow-1">
                     <form method="post" class="colorlib-form">
-                        <h2>USER PROFILE</h2>
+                        <div class="d-flex justify-content-between">
+                       <div><h2>USER PROFILE</h2></div> 
+                       <span class="btn btn-success" style="margin-bottom: 30px;"  data-toggle="modal" data-target="#referModal">Refer a friend</span>
+
+                    </div>
                         <div class="row">
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="fname">First Name</label>
-                                    <input type="text" id="fname" class="form-control" placeholder="Your firstname">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="lname">Last Name</label>
-                                    <input type="text" id="lname" class="form-control" placeholder="Your lastname">
-                                </div>
-                            </div>
-
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="companyname">Date of Birth</label>
-                                    <input type="text" id="companyname" class="form-control" placeholder="Company Name">
+                                    <label for="companyname">Name</label>
+                                    <input type="text" id="companyname" class="form-control" value="<%= user.name %>">
                                 </div>
                             </div>
 
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="fname">Address</label>
-                                    <input type="text" id="address" class="form-control"
-                                        placeholder="Enter Your Address">
-                                </div>
-
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="companyname">Town/City</label>
-                                    <input type="text" id="towncity" class="form-control" placeholder="Town or City">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="stateprovince">State/Province</label>
-                                    <input type="text" id="fname" class="form-control" placeholder="State Province">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="lname">Zip/Postal Code</label>
-                                    <input type="text" id="zippostalcode" class="form-control"
-                                        placeholder="Zip / Postal">
-                                </div>
-                            </div>
 
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="email">E-mail Address</label>
-                                    <input type="text" id="email" class="form-control" placeholder="State Province">
+                                    <input type="text" id="email" class="form-control" value="<%= user.email %>">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="Phone">Phone Number</label>
-                                    <input type="text" id="zippostalcode" class="form-control" placeholder="">
+                                    <input type="text" id="zippostalcode" class="form-control" value="<%= user.mobile %>">
                                 </div>
                             </div>
                         </div>
@@ -92,7 +53,49 @@
                 </div>
             </div>
         </div>
+    <!-- Modal -->
+        <div class="modal fade" id="referModal" tabindex="-1" role="dialog" aria-labelledby="referModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Refer &amp; Earn</h5>
+                        <button type="button" class="close border-0 bg-transparent" data-dismiss="modal" aria-label="Close">
+                            <span class="h4" aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="fw-bold">Invite your friends and family to join the Ecolight.</p>
+                        <p class="mt-1">Earn ₹1000 on every successful referral!</p>
+                        <p class="mt-1">You and your friend will receive ₹1000.</p>
+                        <div class="w-75 d-flex gap-3 my-3 justify-content-center">
+                            <input id="refer-link" type="text" class="input-1 w-100" style="user-select: all;"
+                            disabled value="http://localhost:3000/signup?ref=<%= user._id %>">
+                            <span class="btn-2" onclick="copyContent()">Copy</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <%- include('../partials/ufooter') %>
+        <script>
+             const copyContent = async () => {
+        let referLink = document.getElementById('refer-link').value;
+        try {
+            await navigator.clipboard.writeText(referLink);
+            Toastify({
+                text: "Copied to clipboard",
+                backgroundColor: "#0D6EFD",
+                stopOnFocus: true,
+            }).showToast();
+        } catch (err) {
+            Toastify({
+                text: "Failed to copy",
+                backgroundColor: "#DC2626",
+                stopOnFocus: true,
+            }).showToast();
+        }
+    }
+        </script>
 </body>
 
 </html>

@@ -230,7 +230,7 @@
                     const statuselement = document.getElementById("status")
                     const status = statuselement.dataset.value
 
-                    if (status == "Cancelled" || status == "Delivered" || status == "Returned") {
+                    if (status == "Cancelled" || status == "Delivered" || status == "Returned" || status== "Failed") {
                         const cancelOrderDiv = document.getElementById("cancelOrderDiv");
                         cancelOrderDiv.style.display = "none";
                     }

@@ -10,8 +10,6 @@ module.exports = {
     try {
       let categories = await cat.find({ status: "List" });
       let cartDetails = await Cart.findOne({ user: id }).populate("items.productId")
-      console.log(cartDetails.items[0]);
-      console.log("hii");
       let coupons= await coupon.find({status:"List"})
         res.render("user/cart", { cartDetails, categories,coupons });
     } catch (error) {

@@ -450,10 +450,10 @@ module.exports = {
 
   // To Refer another user
 
-  getRefer: (req, res, next) => {
+  getAbout: (req, res, next) => {
     try {
       const user = req.session.user;
-      res.render("user/refer", { user });
+      res.render("user/about",);
     } catch (error) {
       next(error);
     }

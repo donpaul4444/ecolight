@@ -26,8 +26,7 @@
                         <ul>
                             <li class="<%= title === 'Home' ? 'active' : '' %>"><a href="/">Home</a></li>
                             <li class="<%= title === 'All' ? 'active' : '' %>"><a href="/product">All Products</a></li>
-                            <li><a href="">About</a></li>
-                            <li><a href="">Contact</a></li>
+                            <li class="<%= title === 'about' ? 'active' : '' %>"><a href="/about">About</a></li>
                             <li ><a href="/cart"><i class="icon-shopping-cart"></i> Cart</a></li>
                             <li><a href="/userprofile"><i class="fas fa-user fa-lg"></i></a></li>
                             <li id="loginbutton" hidden><a href="/login"><button class="btn btn-dark btn-sm"

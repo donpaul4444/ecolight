@@ -206,14 +206,14 @@ module.exports = {
       const page = req.query.page || 1;
       const orderscount = await order.aggregate([
         { $unwind: "$items" },
-        { $match: { "items.status": { $ne: "Pending" } } },
+        { $match: { "items.status": { $ne: "Failed" } } },
         { $group: { _id: null, sum: { $sum: 1 } } },
       ]);
 
       const totalpages = Math.ceil(orderscount[0].sum / ITEMS_PER_PAGE);
       const orders = await order.aggregate([
         { $unwind: "$items" },
-        { $match: { "items.status": { $ne: "Pending" } } },
+        { $match: { "items.status": { $ne: "Failed" } } },
         { $sort: { orderDate: -1 } },
         { $skip: ITEMS_PER_PAGE * (page - 1) },
         { $limit: ITEMS_PER_PAGE },
@@ -379,6 +379,7 @@ module.exports = {
       const orders = await order.aggregate([
         { $unwind: "$items" },
         {$match: {"items.status": "Delivered",orderDate: { $gte: new Date(from), $lte:new Date(to) }}},
+        { $sort: { orderDate: 1 } } ,
       ]);
       from = from.split('T')[0]
 			to = to.split('T')[0]

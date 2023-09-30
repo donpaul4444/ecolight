@@ -215,7 +215,8 @@ module.exports = {
         {$skip:ITEMS_PER_PAGE * (page - 1)},
         {$limit:ITEMS_PER_PAGE},
       ]);
-
+      const totalpages=0
+if(!filter.name){
       const productscount = await product.aggregate([
         {
           $lookup: {
@@ -230,7 +231,7 @@ module.exports = {
         {$group:{_id:null,count:{$sum:1}}}
       ])
 
-      const totalpages = Math.ceil(productscount[0].count / ITEMS_PER_PAGE);    
+      const totalpages = Math.ceil(productscount[0].count / ITEMS_PER_PAGE);   } 
       res.render("user/productlist", {
         products,
         page,

@@ -93,8 +93,6 @@ module.exports = {
   getSignup: (req, res, next) => {
     try {
       const refId = req.query.ref;
-      console.log("first");
-      console.log(refId);
       res.render("user/signup", { email: "", mob: "", refId });
     } catch (error) {
       next(error);
@@ -105,9 +103,8 @@ module.exports = {
   postSignup: async (req, res, next) => {
     const data = req.body;
     const refId = req.query.refId;
-    const items=[]
-    console.log("second");
-    console.log(refId);
+    const items = [];
+
     try {
       const user = await users.findOne({ email: data.email });
       const mob = await users.findOne({ mobile: data.mobile });
@@ -131,39 +128,34 @@ module.exports = {
         });
       } else {
         data.password = await bcrypt.hash(data.password, 10);
-        const newuser=await users.create(data);
-
-
-
+        const newuser = await users.create(data);
+        if (refId) {
         const refWallet = await wallet.findOne({ user: refId });
-        console.log("third");
-        console.log(refWallet);
         const temp = {
           title: "Refferal Bonus",
           credit: 1000,
         };
+          if (refWallet) {
+            refWallet.items.push(temp);
+            await refWallet.save();
+          } else {
+            items.push(temp);
+            const wallets = {
+              user: refId,
+              total: 0,
+              items,
+            };
+            await wallet.create(wallets);
+          }
 
-        if (refWallet) {
-          refWallet.items.push(temp);
-          await refWallet.save();
-        } else {
           items.push(temp);
           const wallets = {
-            user: refId,
+            user: newuser._id,
             total: 0,
             items,
           };
           await wallet.create(wallets);
         }
-
-        items.push(temp);
-        const wallets = {
-          user:newuser._id,
-          total: 0,
-          items,
-        };
-        await wallet.create(wallets);
-
         res.redirect("/login");
       }
     } catch (err) {
@@ -453,7 +445,7 @@ module.exports = {
   getAbout: (req, res, next) => {
     try {
       const user = req.session.user;
-      res.render("user/about",);
+      res.render("user/about");
     } catch (error) {
       next(error);
     }

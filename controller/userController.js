@@ -410,6 +410,21 @@ module.exports = {
         path: "items.productId",
       });
 
+
+
+      let flag = 0;
+      cartDetails.items.forEach((item) => {
+        if (item.quantity > item.productId.quantity) {
+          flag = 1;
+        }
+      });
+
+      if (flag == 1) {
+        return res.redirect("/cart?stockstatus=true");
+      }
+
+
+
       let totalprice = 0;
       if (cartDetails) {
         cartDetails.items.forEach((item) => {

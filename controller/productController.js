@@ -299,10 +299,22 @@ module.exports = {
   getWishlist: async (req, res, next) => {
     let user = req.session.user;
     try {
-      data= await users.findOne({_id:user._id}).populate("wishlist")
+     let data= await users.findOne({_id:user._id}).populate("wishlist")
+  
       res.render("user/wishlist", { data ,user});
     } catch (error) {
       next(error);
+    }
+  },
+
+  getCheckWishList :async (req,res,next)=>{
+    let user= req.session.user
+    try {
+      let { wishlist, _id } = await users.findOne({ _id: user._id }).populate("wishlist");
+      let data = wishlist.length;
+      res.status(200).json({data});
+    } catch (error) {
+      next (error)
     }
   },
 };

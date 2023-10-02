@@ -35,7 +35,8 @@
 							<div class="col-sm-12">
 								<div class="side border mb-1">
 									<h3>Category</h3>
-									<ul <% const uniqueCategory=[...new Set(productsfull.map(prod=> prod.category.catname))]
+									<ul <% const uniqueCategory=[...new Set(productsfull.map(prod=>
+										prod.category.catname))]
 										uniqueCategory.forEach(category=> { %>
 										<li><input type="checkbox" id="biobevelCheckbox" value="<%= category %>"
 												class="category" onclick="commonfunction()">
@@ -88,31 +89,32 @@
 					<div class="col-lg-9 col-xl-9">
 						<div class="row row-pb-md">
 							<% if (products.length!==0 ) {%>
-							<% products.forEach(prod=> { %>
-								<div class="col-lg-4 mb-4 text-center">
-									<div class="product-entry border">
-										<a href="/productlist/productdetail?id=<%= prod._id %>" class="prod-img">
-											<img src="/uploads/<%= prod.images[0] %>" class="img-fluid"
-												alt="Free html5 bootstrap 4 template" width="200px">
-										</a>
-										<div class="desc" style="text-align: left;">
-											<h2><a href="#">
-													<%= prod.name %>
-												</a></h2>
-											<h2><a href="#">
-													<%= prod.brand %>
-												</a></h2>
-											<span class="price">₹<%= prod.price %></span>
+								<% products.forEach(prod=> { %>
+									<div class="col-lg-4 mb-4 text-center">
+										<div class="product-entry border">
+											<a href="/productlist/productdetail?id=<%= prod._id %>" class="prod-img">
+												<img src="/uploads/<%= prod.images[0] %>" class="img-fluid"
+													alt="Free html5 bootstrap 4 template" width="200px">
+											</a>
+											<div class="desc" style="text-align: left;">
+												<h2><a href="#">
+														<%= prod.name %>
+													</a></h2>
+												<h2><a href="#">
+														<%= prod.brand %>
+													</a></h2>
+												<span class="price">₹<%= prod.price %></span>
+											</div>
 										</div>
 									</div>
-								</div>
-								<% }); %>
-								<% } else { %>   
-									<div class="d-flex justify-content-center " style="width: 100%;">
-								
-										<img src="/images/no product.png" alt="Red Heart" style="width: 300px; height: auto;">
-									</div>
-									<% } %>
+									<% }); %>
+										<% } else { %>
+											<div class="d-flex justify-content-center " style="width: 100%;">
+
+												<img src="/images/no product.png" alt="Red Heart"
+													style="width: 300px; height: auto;">
+											</div>
+											<% } %>
 						</div>
 						<div class="row">
 							<div class="col-md-12 text-center">
@@ -156,6 +158,16 @@
 
 				const queryParams = new URLSearchParams(window.location.search);
 				const selectedCategory = queryParams.get('category');
+
+				function getCurrentSearchQuery() {
+					const searchValue = queryParams.get('search');
+					return searchValue ? `search=${searchValue}&` : '';
+				}
+
+				const searchInput = document.getElementById("searchvalue");
+				searchInput.value = queryParams.get('search') || '';
+
+
 				const categoryCheckboxes = document.querySelectorAll('.category');
 				categoryCheckboxes.forEach(checkbox => {
 					if (checkbox.value === selectedCategory) {
@@ -170,7 +182,7 @@
 						checkbox.checked = true;
 					}
 				});
-				
+
 
 				const selectedColour = queryParams.get('colour');
 				const colourCheckboxes = document.querySelectorAll('.colour');
@@ -179,7 +191,7 @@
 						checkbox.checked = true;
 					}
 				});
-				
+
 
 				const selectedSort = queryParams.get('sort');
 				const dropdown = document.getElementById("dropdown")
@@ -200,6 +212,7 @@
 					const selectedBrand = document.querySelector('.brand:checked');
 					const selectedColour = document.querySelector('.colour:checked');
 					const selectedSort = document.getElementById("dropdown")
+					const searchvalue = document.getElementById("searchvalue")
 					if (selectedCategory?.value) {
 						str += `category=${selectedCategory.value}&`
 					}
@@ -214,6 +227,9 @@
 					}
 					if (page) {
 						str += `page=${page}`;
+					}
+					if (searchvalue?.value) {
+						str += `search=${searchvalue.value}`;
 					}
 
 					window.location.href = "/product?" + str

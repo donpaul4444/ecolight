@@ -7,11 +7,12 @@ module.exports = {
   // To access cart page in user side
   getCart: async (req, res, next) => {
     let id = req.session.user._id;
+    let stockstatus = req.query.stockstatus === "true" ? true : false;
     try {
       let categories = await cat.find({ status: "List" });
       let cartDetails = await Cart.findOne({ user: id }).populate("items.productId")
       let coupons= await coupon.find({status:"List"})
-        res.render("user/cart", { cartDetails, categories,coupons });
+        res.render("user/cart", { cartDetails, categories,coupons,stockstatus });
     } catch (error) {
       next(error);
     }
@@ -23,6 +24,7 @@ module.exports = {
     try {
       const userId = req.session.user._id;
       const { productId, quantity } = req.query;
+
       const cartItem = {
         productId: productId,
         quantity: parseInt(quantity),

@@ -18,6 +18,7 @@ router.post("/sendOTP",passing.cache,userController.postOtp)
 router.get("/checkuser",passing.cache,userController.getCheckUser)
 
 
+
 router.get("/userprofile",passing.cache,session.authuser,userController.getUserProfile)
 router.get("/address/manage",passing.cache,session.authuser,userController.getManageAddress)
 router.get("/address/add",passing.cache,session.authuser,userController.getAddAddress)
@@ -37,10 +38,11 @@ router.get("/invoice",passing.cache,session.authuser,orderController.getInvoice)
 
 router.get("/product",passing.cache,productController. getProductListNew)
 router.get("/productlist/productdetail",session.authuser,passing.cache,productController.getProductDetail)
-router.get("/wishlist",passing.cache,productController. getWishlist)
-router.get("/wishlist/add",passing.cache,productController. getWishlistAdd)
-router.get("/wishlist/remove",passing.cache,productController. getWishlistRemove)
-router.get("/wishlist/delete",passing.cache,productController. getWishlistDelete)
+router.get("/wishlist",session.authuser,passing.cache,productController. getWishlist)
+router.get("/wishlist/add",session.authuser,passing.cache,productController. getWishlistAdd)
+router.get("/wishlist/remove",session.authuser,passing.cache,productController. getWishlistRemove)
+router.get("/wishlist/delete",session.authuser,passing.cache,productController. getWishlistDelete)
+router.get("/checkwishlist",session.authuser,passing.cache,productController.getCheckWishList)
 
 
 router.get("/cart",passing.cache,session.authuser,cartController.getCart)

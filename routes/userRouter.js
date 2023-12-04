@@ -14,7 +14,7 @@ router.post("/login",passing.cache,userController.postLogin)
 router.get("/logout",passing.cache,userController.getLogout)
 router.get("/signup",passing.cache,userController.getSignup)
 router.post("/signup",passing.cache,userController.postSignup)
-router.post("/sendOTP",passing.cache,userController.postOtp)
+// router.post("/sendOTP",passing.cache,userController.postOtp)
 router.get("/checkuser",passing.cache,userController.getCheckUser)
 
 

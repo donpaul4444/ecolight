@@ -9,8 +9,8 @@ const coupon = require("../model/coupons");
 const bcrypt = require("bcrypt");
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
-const client = require("twilio")(accountSid, authToken);
-const sid = process.env.TWILIO_SID;
+// const client = require("twilio")(accountSid, authToken);
+// const sid = process.env.TWILIO_SID;
 const ITEMS_PER_PAGE = 6;
 
 module.exports = {
@@ -102,23 +102,23 @@ module.exports = {
   // Signup and OTP verification
   postSignup: async (req, res, next) => {
     const data = req.body;
-    const refId = req.query.refId;
+    // const refId = req.query.refId;
     const items = [];
 
     try {
       const user = await users.findOne({ email: data.email });
       const mob = await users.findOne({ mobile: data.mobile });
 
-      const verificationstatus = await client.verify.v2
-        .services(sid)
-        .verificationChecks.create({ to: `+91${data.mobile}`, code: data.otp });
+      // const verificationstatus = await client.verify.v2
+      //   .services(sid)
+      //   .verificationChecks.create({ to: `+91${data.mobile}`, code: data.otp });
 
-      if (verificationstatus.status !== "approved") {
-        return res.render("user/signup", {
-          mob: "please check the OTP you entered",
-          email: "",
-        });
-      }
+      // if (verificationstatus.status !== "approved") {
+      //   return res.render("user/signup", {
+      //     mob: "please check the OTP you entered",
+      //     email: "",
+      //   });
+      // }
       if (user) {
         res.render("user/signup", { email: "email id already exist", mob: "" });
       } else if (mob) {
@@ -129,33 +129,33 @@ module.exports = {
       } else {
         data.password = await bcrypt.hash(data.password, 10);
         const newuser = await users.create(data);
-        if (refId) {
-        const refWallet = await wallet.findOne({ user: refId });
-        const temp = {
-          title: "Refferal Bonus",
-          credit: 1000,
-        };
-          if (refWallet) {
-            refWallet.items.push(temp);
-            await refWallet.save();
-          } else {
-            items.push(temp);
-            const wallets = {
-              user: refId,
-              total: 0,
-              items,
-            };
-            await wallet.create(wallets);
-          }
+        // if (refId) {
+        // const refWallet = await wallet.findOne({ user: refId });
+        // const temp = {
+        //   title: "Refferal Bonus",
+        //   credit: 1000,
+        // };
+        //   if (refWallet) {
+        //     refWallet.items.push(temp);
+        //     await refWallet.save();
+        //   } else {
+        //     items.push(temp);
+        //     const wallets = {
+        //       user: refId,
+        //       total: 0,
+        //       items,
+        //     };
+        //     await wallet.create(wallets);
+        //   }
 
-          items.push(temp);
-          const wallets = {
-            user: newuser._id,
-            total: 0,
-            items,
-          };
-          await wallet.create(wallets);
-        }
+        //   items.push(temp);
+        //   const wallets = {
+        //     user: newuser._id,
+        //     total: 0,
+        //     items,
+        //   };
+        //   await wallet.create(wallets);
+        // }
         res.redirect("/login");
       }
     } catch (err) {
@@ -164,34 +164,34 @@ module.exports = {
   },
 
   // Verify the OTP
-  postOtp: async (req, res, next) => {
-    const { mob } = req.body;
-    try {
-      const status = await users.countDocuments({ mobile: mob });
-      if (status > 0) {
-        return res
-          .status(409)
-          .json({ success: false, error: "mboile number already exist" });
-      }
+  // postOtp: async (req, res, next) => {
+  //   const { mob } = req.body;
+  //   try {
+  //     const status = await users.countDocuments({ mobile: mob });
+  //     if (status > 0) {
+  //       return res
+  //         .status(409)
+  //         .json({ success: false, error: "mboile number already exist" });
+  //     }
 
-      client.verify.v2
-        .services(sid)
-        .verifications.create({ to: `+91${mob}`, channel: "whatsapp" })
-        .then((verification) => {
-          console.log(verification.sid);
-          res.status(200).json({ success: true });
-        })
-        .catch((err) => {
-          res
-            .status(500)
-            .json({ success: false, error: "something went wrong" });
-          console.log(err);
-        });
-    } catch (error) {
-      res.status(500).json({ success: false, error: "something went wrong" });
-      next(error);
-    }
-  },
+  //     client.verify.v2
+  //       .services(sid)
+  //       .verifications.create({ to: `+91${mob}`, channel: "whatsapp" })
+  //       .then((verification) => {
+  //         console.log(verification.sid);
+  //         res.status(200).json({ success: true });
+  //       })
+  //       .catch((err) => {
+  //         res
+  //           .status(500)
+  //           .json({ success: false, error: "something went wrong" });
+  //         console.log(err);
+  //       });
+  //   } catch (error) {
+  //     res.status(500).json({ success: false, error: "something went wrong" });
+  //     next(error);
+  //   }
+  // },
 
   // for changing the status of login/logout
   getCheckUser: async (req, res, next) => {
